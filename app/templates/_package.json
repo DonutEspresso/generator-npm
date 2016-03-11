@@ -1,0 +1,36 @@
+{
+  "name": "<%= data.name %>",
+  "version": "1.0.0",
+  "main": "lib/index.js",
+  "description": "<%= data.description %>",
+  "homepage": "<%= data.homepage %>",
+  "author": {
+    "name": "<%= data.authorName %>",
+    "email": "<%= data.authorEmail %>"
+  },
+  "repository": {
+    "type": "git",
+    "url": "<%= data.repoUrl %>"
+  },
+  "license": "<%= data.license %>",
+  "files": [
+    "lib"
+  ],
+  "keywords": [
+    "<%= data.name %>"<%
+    for (var i = 0; i < data.keywords.length; i++) { %>,
+    "<%= data.keywords[i] %>"<%
+    } %>
+  ],
+  "devDependencies": {
+    "chai": "^3.5.0",
+<%_ if (data.coveralls) { _%>
+    "coveralls": "^2.11.6",
+<%_ } _%>
+    "eslint": "^2.3.0",
+    "istanbul": "^0.4.2",
+    "jscs": "^2.9.0",
+    "mocha": "^2.4.5",
+    "nsp": "^2.0.0"
+  }
+}

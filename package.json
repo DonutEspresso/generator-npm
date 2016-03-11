@@ -1,0 +1,35 @@
+{
+  "name": "generator-npm",
+  "version": "1.0.0",
+  "description": "A yeoman generator for npm modules",
+  "main": "lib/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DonutEspresso/generator-npm.git"
+  },
+  "keywords": [
+    "yeoman",
+    "generator",
+    "npm",
+    "module",
+    "make",
+    "Makefile"
+  ],
+  "author": "Alex Liu",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/DonutEspresso/generator-npm/issues"
+  },
+  "homepage": "https://github.com/DonutEspresso/generator-npm#readme",
+  "dependencies": {
+    "chalk": "^1.1.1",
+    "npm-name": "^2.1.0",
+    "slugg": "^1.0.0",
+    "yeoman-generator": "^0.22.5"
+  },
+  "devDependencies": {
+    "eslint": "^2.3.0",
+    "jscs": "^2.11.0",
+    "nsp": "^2.2.1"
+  }
+}
