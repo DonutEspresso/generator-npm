@@ -167,7 +167,7 @@ var npmGenerator = generators.Base.extend({
             self.data.authorEmail = answers.authorEmail;
             self.data.repoUrl = answers.repoUrl;
             self.data.homepage = answers.homepage;
-            self.data.keywords = answers.keywords;
+            self.data.keywords = answers.keywords.split(',');
             self.data.license = answers.license;
             self.data.year = (new Date()).getFullYear();
             self.data.coveralls = answers.coveralls;
@@ -183,6 +183,7 @@ var npmGenerator = generators.Base.extend({
         mkdirp.sync(path.join(self.cwd, 'lib/'));
         mkdirp.sync(path.join(self.cwd, 'test/'));
         mkdirp.sync(path.join(self.cwd, 'tools/'));
+        mkdirp.sync(path.join(self.cwd, 'tools/githooks'));
 
         self.template('_package.json', 'package.json');
         self.template('_README.md', 'README.md');
@@ -195,6 +196,7 @@ var npmGenerator = generators.Base.extend({
         self.copy('gitignore', '.gitignore');
         self.copy('index.js', 'lib/index.js');
         self.copy('_nspBadge.js', 'tools/nspBadge.js');
+        self.copy('pre-push', 'tools/githooks/pre-push');
 
         if (!self.data.coveralls) {
             self.copy('_coverageBadge.js', 'tools/coverageBadge.js');
