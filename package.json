@@ -23,6 +23,7 @@
   "homepage": "https://github.com/DonutEspresso/generator-npm#readme",
   "dependencies": {
     "chalk": "^1.1.1",
+    "mkdirp": "^0.5.1",
     "npm-name": "^2.1.0",
     "slugg": "^1.0.0",
     "yeoman-generator": "^0.22.5"
