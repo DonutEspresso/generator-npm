@@ -44,6 +44,7 @@ GIT_HOOK_DEST   = '.git/hooks/pre-push'
 <%_ if (data.testEntry) { _%>
 TEST_ENTRY     := $(ROOT)/test/index.js
 <%_ } _%>
+LCOV           := $(ROOT)/coverage/lcov.info
 SHRINKWRAP     := $(ROOT)/npm-shrinkwrap.json
 ALL_FILES      := $(shell find $(LIB_FILES) $(TEST_FILES) -name '*.js' -type f)\
 				  $(shell find $(ROOT) -name '*.js' -type f -maxdepth 1)
