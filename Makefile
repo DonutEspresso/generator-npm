@@ -1,11 +1,11 @@
 #
 # Directories
 #
-ROOT           := $(shell pwd)
-NODE_MODULES   := $(ROOT)/node_modules
-NODE_BIN       := $(NODE_MODULES)/.bin
-TOOLS          := $(ROOT)/tools
-TMP            := $(ROOT)/tmp
+ROOT		:= $(shell pwd)
+NODE_MODULES	:= $(ROOT)/node_modules
+NODE_BIN	:= $(NODE_MODULES)/.bin
+TOOLS		:= $(ROOT)/tools
+TMP		:= $(ROOT)/tmp
 
 
 #
@@ -13,26 +13,26 @@ TMP            := $(ROOT)/tmp
 #
 ESLINT		:= $(NODE_BIN)/eslint
 JSCS		:= $(NODE_BIN)/jscs
-NSP         := $(NODE_BIN)/nsp
-NPM		    := npm
-GIT         := git
-NSP_BADGE   := $(TOOLS)/nspBadge.js
+NSP		:= $(NODE_BIN)/nsp
+NPM		:= npm
+GIT		:= git
+NSP_BADGE	:= $(TOOLS)/nspBadge.js
 
 
 #
 # Directories
 #
-LIB_FILES  	   := $(ROOT)/lib
+LIB_FILES	:= $(ROOT)/lib
 
 
 #
 # Files and globs
 #
-GIT_HOOK_SRC    = '../../tools/githooks/pre-push'
-GIT_HOOK_DEST   = '.git/hooks/pre-push'
-TEST_ENTRY     := $(ROOT)/test/index.js
-SHRINKWRAP     := $(ROOT)/npm-shrinkwrap.json
-ALL_FILES      := $(ROOT)/app/index.js
+GIT_HOOK_SRC	= '../../tools/githooks/pre-push'
+GIT_HOOK_DEST	= '.git/hooks/pre-push'
+TEST_ENTRY	:= $(ROOT)/test/index.js
+SHRINKWRAP	:= $(ROOT)/npm-shrinkwrap.json
+ALL_FILES	:= $(ROOT)/app/index.js
 
 
 
