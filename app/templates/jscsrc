@@ -95,7 +95,7 @@
     ],
     "requireSpaceBetweenArguments": true,
     "requireSpacesInsideObjectBrackets": {
-        "allExcept": [ "}", ")" ]
+        "allExcept": [ "}", ")", "]" ]
     },
     "requireSpacesInConditionalExpression": true,
     "requireSpacesInForStatement": true,
