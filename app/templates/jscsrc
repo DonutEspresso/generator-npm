@@ -94,6 +94,9 @@
         "catch"
     ],
     "requireSpaceBetweenArguments": true,
+    "requireSpacesInsideObjectBrackets": {
+        "allExcept": [ "}", ")" ]
+    },
     "requireSpacesInConditionalExpression": true,
     "requireSpacesInForStatement": true,
     "requireSpacesInFunction": {
