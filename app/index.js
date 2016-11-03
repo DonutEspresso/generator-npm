@@ -142,6 +142,12 @@ var npmGenerator = generators.Base.extend({
                 default: 'MIT'
             },
             {
+                name: 'es6',
+                type: 'confirm',
+                message: 'es6 lint support',
+                default: true
+            },
+            {
                 name: 'testEntry',
                 type: 'confirm',
                 message: 'unit test entry point',
@@ -173,6 +179,7 @@ var npmGenerator = generators.Base.extend({
             self.data.coveralls = answers.coveralls;
             self.data.travis = answers.travis;
             self.data.testEntry = answers.testEntry;
+            self.data.es6 = answers.es6;
             done();
         });
     },
