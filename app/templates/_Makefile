@@ -55,18 +55,18 @@ ALL_FILES	:= $(shell find $(LIB_FILES) $(TEST_FILES) -name '*.js' -type f \
 # Targets
 #
 
+node_modules: package.json ## Install node_modules
+	@$(NPM) install
+	@touch $(NODE_MODULES)
+
+
 .PHONY: help
 help:
 	@perl -nle'print $& if m{^[a-zA-Z_-]+:.*?## .*$$}' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
 
 .PHONY: all
-all: prepush
-
-
-node_modules: package.json
-	@$(NPM) install
-	@touch $(NODE_MODULES)
+all: prepush ## Runs all build tasks
 
 
 .PHONY: githooks
