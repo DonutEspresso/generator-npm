@@ -112,7 +112,7 @@
         "no-use-before-define": [ 2, "nofunc" ],
 
         // node.js
-        "callback-return": [ 2, [ "callback", "cb", "cb1", "cb2", "next", "innerCb" ]],
+        "callback-return": [ 2, [ "callback", "cb", "cb1", "cb2", "cb3", "next", "innerCb", "done" ]],
         "global-require": [ 2 ],
         "handle-callback-err": [ 2, "^.*(e|E)rr" ],
         "no-mixed-requires": [ 2 ],
@@ -126,7 +126,7 @@
         "no-array-constructor": [ 2 ],
         "no-nested-ternary": [ 2 ],
         "no-new-object": [ 2 ]<%_ if (data.es6) { _%>,
-    	
+
         // es6
         "no-class-assign": [ 2 ],
         "no-dupe-class-members": [ 2 ],
@@ -134,6 +134,6 @@
         "no-const-assign": [ 2 ],
         "no-var": [ 2 ],
         "prefer-const": [ 2 ]
-    	<%_ } _%>
+        <%_ } _%>
     }
 }
