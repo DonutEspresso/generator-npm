@@ -38,12 +38,12 @@ new or changed functionality.
 To start contributing, install the git prepush hooks:
 
 ```sh
-npm run githooks
+make githooks
 ```
 
 Before committing, lint and test your code using the included Makefile:
 ```sh
-npm run prepush
+make prepush
 ```
 
 If you have style errors, you can auto fix whitespace issues by running:
