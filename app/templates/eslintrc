@@ -5,7 +5,7 @@
     "extends": "eslint:recommended",
     "env": {
         "browser": false,
-        "node": true,
+        "node": true
     },
     "parserOptions": {
         "ecmaVersion": 6
