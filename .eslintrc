@@ -5,22 +5,26 @@
     "extends": "eslint:recommended",
     "env": {
         "browser": false,
-        "node": true
+        "node": true,
+        "es6": true
+    },
+    "parserOptions": {
+        "ecmaVersion": 6
     },
     "globals": {
-        // not sure why this is needed. eslint maybe got confused by the 
+        // not sure why this is needed. eslint maybe got confused by the
         // template eslint files?
         "Date": true
-    },  
+    },
     "rules": {
         "valid-jsdoc": [ 2, {
             "requireReturnDescription": false
         }],
 
         // best practices
-		"array-callback-return": [ 2 ],
+        "array-callback-return": [ 2 ],
         "block-scoped-var": [ 2 ],
-		"complexity": [ 1 ],
+        "complexity": [ 1 ],
         "consistent-return": [ 2 ],
         "curly": [ 2 ],
         "default-case": [ 2 ],
@@ -29,9 +33,9 @@
         "guard-for-in": [ 2 ],
         "no-alert": [ 2 ],
         "no-caller": [ 2 ],
-		"no-case-declarations": [ 2 ],
+        "no-case-declarations": [ 2 ],
         "no-div-regex": [ 2 ],
-		"no-empty-function": [ 2 ],
+        "no-empty-function": [ 2 ],
         "no-empty-pattern": [ 2 ],
         "no-eq-null": [ 2 ],
         "no-eval": [ 2 ],
