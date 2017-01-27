@@ -2,19 +2,19 @@
 'use strict';
 
 // core modules
-var fs = require('fs');
-var path = require('path');
+const fs = require('fs');
+const path = require('path');
 
 // external modules
-var chalk = require('chalk');
-var _ = require('lodash');
-var mkdirp = require('mkdirp');
-var npmName = require('npm-name');
-var generators = require('yeoman-generator');
+const chalk = require('chalk');
+const _ = require('lodash');
+const mkdirp = require('mkdirp');
+const npmName = require('npm-name');
+const Generator = require('yeoman-generator');
 
 
-var npmGenerator = generators.Base.extend({
-    init: function() {
+const npmGenerator = class extends Generator {
+    init() {
 
         var self = this;
         self.data = {};
@@ -31,8 +31,9 @@ var npmGenerator = generators.Base.extend({
         self.log(ascii);
         self.log('A npm module scaffolding generator');
         self.log('--------------------------------------------------------\n');
-    },
-    check: function() {
+    }
+
+    check() {
 
         var self = this;
         var done = self.async();
@@ -62,15 +63,16 @@ var npmGenerator = generators.Base.extend({
                 }
             });
         });
-    },
-    promptModuleName: function() {
+    }
 
-        var self = this;
-        var done = self.async();
-        var basedir = self.basedir;
-        var prompts = [
+    promptModuleName() {
+
+        const self = this;
+        const basedir = self.basedir;
+        const prompts = [
             {
                 name: 'name',
+                type: 'input',
                 message: 'module name',
                 default: basedir
             },
@@ -80,33 +82,26 @@ var npmGenerator = generators.Base.extend({
                 message: 'This module already exists on npm, choose another?',
                 default: true,
                 when: function(answers) {
-                    var cb = self.async();
-
-                    npmName(answers.name)
-                        .then(function(available) {
-                            return cb(!available);
-                        })
-                        .catch(function(err) {
-                            throw err;
-                        });
+                    return npmName(answers.name).then(function(available) {
+                        return !available;
+                    });
                 }
             }
         ];
 
-        return self.prompt(prompts, function(answers) {
+
+        return self.prompt(prompts).then(function(answers) {
             if (answers.taken) {
-                return self.promptModuleName();
+                self.promptModuleName();
+            } else {
+                self.data.name = _.kebabCase(answers.name);
             }
-
-            self.data.name = _.kebabCase(answers.name);
-
-            return done();
         });
-    },
-    promptInfo: function() {
+    }
+
+    promptInfo() {
 
         var self = this;
-        var done = self.async();
         var prompts = [
             {
                 name: 'description',
@@ -142,12 +137,6 @@ var npmGenerator = generators.Base.extend({
                 default: 'MIT'
             },
             {
-                name: 'es6',
-                type: 'confirm',
-                message: 'es6 lint support',
-                default: true
-            },
-            {
                 name: 'testEntry',
                 type: 'confirm',
                 message: 'unit test entry point',
@@ -167,7 +156,7 @@ var npmGenerator = generators.Base.extend({
             }
         ];
 
-        self.prompt(prompts, function(answers) {
+        return self.prompt(prompts).then(function(answers) {
             self.data.description = answers.description;
             self.data.authorName = answers.authorName;
             self.data.authorEmail = answers.authorEmail;
@@ -180,10 +169,10 @@ var npmGenerator = generators.Base.extend({
             self.data.travis = answers.travis;
             self.data.testEntry = answers.testEntry;
             self.data.es6 = answers.es6;
-            done();
         });
-    },
-    generate: function() {
+    }
+
+    generate() {
 
         var self = this;
 
@@ -192,33 +181,92 @@ var npmGenerator = generators.Base.extend({
         mkdirp.sync(path.join(self.cwd, 'tools/'));
         mkdirp.sync(path.join(self.cwd, 'tools/githooks'));
 
-        self.template('_package.json', 'package.json');
-        self.template('_README.md', 'README.md');
-        self.template('_testIndex.js', 'test/index.js');
-        self.template('_LICENSE', 'LICENSE');
-        self.template('_Makefile', 'Makefile');
-        self.copy('eslintrc', '.eslintrc');
-        self.copy('eslintrc.test', 'test/.eslintrc');
-        self.copy('jscsrc', '.jscsrc');
-        self.copy('gitignore', '.gitignore');
-        self.copy('index.js', 'lib/index.js');
-        self.copy('_nspBadge.js', 'tools/nspBadge.js');
-        self.copy('pre-push', 'tools/githooks/pre-push');
+        self.fs.copyTpl(
+            self.templatePath('_package.json'),
+            self.destinationPath('package.json'),
+            self
+        );
+
+        self.fs.copyTpl(
+            self.templatePath('_README.md'),
+            self.destinationPath('README.md'),
+            self
+        );
+
+        self.fs.copyTpl(
+            self.templatePath('_testIndex.js'),
+            self.destinationPath('test/index.js'),
+            self
+        );
+
+        self.fs.copyTpl(
+            self.templatePath('_LICENSE'),
+            self.destinationPath('LICENSE'),
+            self
+        );
+
+        self.fs.copyTpl(
+            self.templatePath('_Makefile'),
+            self.destinationPath('Makefile'),
+            self
+        );
+
+        self.fs.copy(
+            self.templatePath('eslintrc'),
+            self.destinationPath('.eslintrc')
+        );
+
+        self.fs.copy(
+            self.templatePath('eslintrc.test'),
+            self.destinationPath('test/.eslintrc')
+        );
+
+        self.fs.copy(
+            self.templatePath('jscsrc'),
+            self.destinationPath('.jscsrc')
+        );
+
+        self.fs.copy(
+            self.templatePath('gitignore'),
+            self.destinationPath('.gitignore')
+        );
+
+        self.fs.copy(
+            self.templatePath('index.js'),
+            self.destinationPath('lib/index.js')
+        );
+
+        self.fs.copy(
+            self.templatePath('_nspBadge.js'),
+            self.destinationPath('tools/nspBadge.js')
+        );
+
+        self.fs.copy(
+            self.templatePath('pre-push'),
+            self.destinationPath('tools/githooks/pre-push')
+        );
 
         if (!self.data.coveralls) {
-            self.copy('_coverageBadge.js', 'tools/coverageBadge.js');
+            self.fs.copy(
+                self.templatePath('_coverageBadge.js'),
+                self.destinationPath('tools/coverageBadge.js')
+            );
         }
 
         if (self.data.travis) {
-            self.copy('travis.yml', '.travis.yml');
+            self.fs.copy(
+                self.templatePath('travis.yml'),
+                self.destinationPath('.travis.yml')
+            );
         }
-    },
-    install: function() {
+    }
+
+    install() {
 
         var self = this;
         self.npmInstall();
     }
-});
+};
 
 
 module.exports = npmGenerator;

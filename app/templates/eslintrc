@@ -3,14 +3,12 @@
     // possible errors section and more:
     // http://eslint.org/docs/rules/#possible-errors
     "extends": "eslint:recommended",
-    <%_ if (data.es6) { _%>
-    "parserOptions": {
-        "ecmaVersion": 6
-    },
-    <%_ } _%>
     "env": {
         "browser": false,
         "node": true,
+    },
+    "parserOptions": {
+        "ecmaVersion": 6
     },
     "rules": {
         // possible errors
@@ -125,7 +123,7 @@
         "consistent-this": [ 2, "self" ],
         "no-array-constructor": [ 2 ],
         "no-nested-ternary": [ 2 ],
-        "no-new-object": [ 2 ]<%_ if (data.es6) { _%>,
+        "no-new-object": [ 2 ]
 
         // es6
         "no-class-assign": [ 2 ],
@@ -134,6 +132,5 @@
         "no-const-assign": [ 2 ],
         "no-var": [ 2 ],
         "prefer-const": [ 2 ]
-        <%_ } _%>
     }
 }

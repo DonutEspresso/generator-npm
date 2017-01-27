@@ -15,7 +15,6 @@ ESLINT		:= $(NODE_BIN)/eslint
 JSCS		:= $(NODE_BIN)/jscs
 NSP		:= $(NODE_BIN)/nsp
 NPM		:= npm
-GIT		:= git
 NSP_BADGE	:= $(TOOLS)/nspBadge.js
 
 
