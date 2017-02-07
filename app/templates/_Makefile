@@ -22,7 +22,6 @@ NSP		:= $(NODE_BIN)/nsp
 COVERALLS	:= $(NODE_BIN)/coveralls
 <%_ } _%>
 NPM		:= npm
-GIT		:= git
 NSP_BADGE	:= $(TOOLS)/nspBadge.js
 <%_ if (!data.coveralls) { _%>
 COVERAGE_BADGE	:= $(TOOLS)/coverageBadge.js
@@ -71,17 +70,17 @@ githooks: ## Install git pre-push hooks.
 
 
 .PHONY: lint
-lint: node_modules $(ESLINT) ## Run lint checker (eslint).
+lint: node_modules $(ESLINT) $(ALL_FILES) ## Run lint checker (eslint).
 	@$(ESLINT) $(ALL_FILES)
 
 
 .PHONY: codestyle
-codestyle: node_modules $(JSCS) ## Run code style checker (jscs).
+codestyle: node_modules $(JSCS) $(ALL_FILES) ## Run code style checker (jscs).
 	@$(JSCS) $(ALL_FILES)
 
 
 .PHONY: codestyle-fix
-codestyle-fix: node_modules $(JSCS) ## Run code style checker with auto whitespace fixing.
+codestyle-fix: node_modules $(JSCS) $(ALL_FILES) ## Run code style checker with auto whitespace fixing.
 	@$(JSCS) $(ALL_FILES) --fix
 
 
@@ -122,14 +121,10 @@ report-coverage: coverage
 
 
 <%_ } _%>
-.PHONY: clean-coverage
-clean-coverage:
-	@rm -rf $(COVERAGE)
-
-
 .PHONY: clean
 clean: clean-coverage ## Cleans unit test coverage files and node_modules.
 	@rm -rf $(NODE_MODULES)
+	@rm -rf $(COVERAGE)
 
 
 #
