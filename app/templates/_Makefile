@@ -5,7 +5,8 @@ ROOT		:= $(shell pwd)
 NODE_MODULES	:= $(ROOT)/node_modules
 NODE_BIN	:= $(NODE_MODULES)/.bin
 TOOLS		:= $(ROOT)/tools
-TMP		:= $(ROOT)/tmp
+TEST		:= $(ROOT)/test
+COVERAGE	:= $(ROOT)/coverage
 
 
 #
@@ -29,14 +30,6 @@ COVERAGE_BADGE	:= $(TOOLS)/coverageBadge.js
 
 
 #
-# Directories
-#
-LIB_FILES	:= $(ROOT)/lib
-TEST_FILES	:= $(ROOT)/test
-COVERAGE_FILES	:= $(ROOT)/coverage
-
-
-#
 # Files and globs
 #
 GIT_HOOK_SRC	= '../../tools/githooks/pre-push'
@@ -44,11 +37,14 @@ GIT_HOOK_DEST	= '.git/hooks/pre-push'
 <%_ if (data.testEntry) { _%>
 TEST_ENTRY	:= $(ROOT)/test/index.js
 <%_ } _%>
+<%_ if (data.coveralls) { _%>
 LCOV	:= $(ROOT)/coverage/lcov.info
+<%_ } _%>
 SHRINKWRAP	:= $(ROOT)/npm-shrinkwrap.json
-ALL_FILES	:= $(shell find $(LIB_FILES) $(TEST_FILES) -name '*.js' -type f \
-	-not \( -path './node_modules/*' -prune \))
-
+ALL_FILES	:= $(shell find $(ROOT) \
+			-not \( -path $(NODE_MODULES) -prune \)
+			-name '*.js' -type f)
+TEST_FILES	:= $(shell find $(TEST) -name '*.js' -type f)
 
 
 #
@@ -75,22 +71,22 @@ githooks: ## Install git pre-push hooks.
 
 
 .PHONY: lint
-lint: node_modules $(ALL_FILES) ## Run lint checker (eslint).
+lint: node_modules $(ESLINT) ## Run lint checker (eslint).
 	@$(ESLINT) $(ALL_FILES)
 
 
 .PHONY: codestyle
-codestyle: node_modules $(ALL_FILES) ## Run code style checker (jscs).
+codestyle: node_modules $(JSCS) ## Run code style checker (jscs).
 	@$(JSCS) $(ALL_FILES)
 
 
 .PHONY: codestyle-fix
-codestyle-fix: node_modules $(ALL_FILES) ## Run code style checker with auto whitespace fixing.
+codestyle-fix: node_modules $(JSCS) ## Run code style checker with auto whitespace fixing.
 	@$(JSCS) $(ALL_FILES) --fix
 
 
 .PHONY: nsp
-nsp: node_modules $(ALL_FILES) ## Run nsp. Shrinkwraps dependencies, checks for vulnerabilities.
+nsp: node_modules $(NSP) $(NPM) $(NSP_BADGE) ## Run nsp. Shrinkwraps dependencies, checks for vulnerabilities.
 	@$(NPM) shrinkwrap --dev
 	@($(NSP) check) | $(NSP_BADGE)
 	@rm $(SHRINKWRAP)
@@ -101,7 +97,7 @@ prepush: node_modules lint codestyle coverage nsp ## Git pre-push hook task. Run
 
 
 .PHONY: test
-test: node_modules $(ALL_FILES) ## Run unit tests.
+test: node_modules $(MOCHA) ## Run unit tests.
 <%_ if (data.testEntry) { _%>
 	@$(MOCHA) -R spec --full-trace $(TEST_ENTRY)
 <%_ } else { _%>
@@ -110,7 +106,7 @@ test: node_modules $(ALL_FILES) ## Run unit tests.
 
 
 .PHONY: coverage
-coverage: node_modules $(ISTANBUL) $(SRCS) ## Run unit tests with coverage reporting. Generates reports into /coverage.
+coverage: node_modules $(ISTANBUL) $(_MOCHA) $(COVERAGE_BADGE) ## Run unit tests with coverage reporting. Generates reports into /coverage.
 <%_ if (!data.coveralls) { _%>
 	@$(ISTANBUL) cover $(_MOCHA) --report json-summary --report html -- -R spec $(TEST_ENTRY)
 	@$(COVERAGE_BADGE)
@@ -128,7 +124,7 @@ report-coverage: coverage
 <%_ } _%>
 .PHONY: clean-coverage
 clean-coverage:
-	@rm -rf $(COVERAGE_FILES)
+	@rm -rf $(COVERAGE)
 
 
 .PHONY: clean
