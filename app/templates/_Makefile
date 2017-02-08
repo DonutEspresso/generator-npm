@@ -4,14 +4,17 @@
 ROOT		:= $(shell pwd)
 NODE_MODULES	:= $(ROOT)/node_modules
 NODE_BIN	:= $(NODE_MODULES)/.bin
-TOOLS		:= $(ROOT)/tools
 TEST		:= $(ROOT)/test
 COVERAGE	:= $(ROOT)/coverage
+TOOLS		:= $(ROOT)/tools
+GITHOOKS_SRC	:= $(TOOLS)/githooks
+GITHOOKS_DEST	:= $(ROOT)/.git/hooks
 
 
 #
 # Tools and binaries
 #
+NPM		:= npm
 ESLINT		:= $(NODE_BIN)/eslint
 JSCS		:= $(NODE_BIN)/jscs
 MOCHA		:= $(NODE_BIN)/mocha
@@ -21,7 +24,6 @@ NSP		:= $(NODE_BIN)/nsp
 <%_ if (data.coveralls) { _%>
 COVERALLS	:= $(NODE_BIN)/coveralls
 <%_ } _%>
-NPM		:= npm
 NSP_BADGE	:= $(TOOLS)/nspBadge.js
 <%_ if (!data.coveralls) { _%>
 COVERAGE_BADGE	:= $(TOOLS)/coverageBadge.js
@@ -31,13 +33,11 @@ COVERAGE_BADGE	:= $(TOOLS)/coverageBadge.js
 #
 # Files and globs
 #
-GIT_HOOK_SRC	= '../../tools/githooks/pre-push'
-GIT_HOOK_DEST	= '.git/hooks/pre-push'
 <%_ if (data.testEntry) { _%>
 TEST_ENTRY	:= $(ROOT)/test/index.js
 <%_ } _%>
 <%_ if (data.coveralls) { _%>
-LCOV	:= $(ROOT)/coverage/lcov.info
+LCOV		:= $(ROOT)/coverage/lcov.info
 <%_ } _%>
 SHRINKWRAP	:= $(ROOT)/npm-shrinkwrap.json
 ALL_FILES	:= $(shell find $(ROOT) \
@@ -65,8 +65,8 @@ all: prepush ## Runs all build tasks
 
 
 .PHONY: githooks
-githooks: ## Install git pre-push hooks.
-	@ln -s $(GIT_HOOK_SRC) $(GIT_HOOK_DEST)
+githooks: ## Symlink git hooks.
+	@for hook in $(GITHOOKS_SRC)/*; do ln -sf $${hook} $(GITHOOKS_DEST)/$${hook##*/}; done
 
 
 .PHONY: lint
@@ -80,7 +80,7 @@ codestyle: node_modules $(JSCS) $(ALL_FILES) ## Run code style checker (jscs).
 
 
 .PHONY: codestyle-fix
-codestyle-fix: node_modules $(JSCS) $(ALL_FILES) ## Run code style checker with auto whitespace fixing.
+codestyle-fix: node_modules $(JSCS) $(ALL_FILES) ## Run code style checker with auto whitespace fixing (jscs).
 	@$(JSCS) $(ALL_FILES) --fix
 
 
