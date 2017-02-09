@@ -2,34 +2,34 @@
 
 'use strict';
 
-var fs = require('fs');
-var path = require('path');
+const fs = require('fs');
+const path = require('path');
 
-var README_PATH = path.join(__dirname, '../README.md');
-var FAIL_BADGE = 'vulnerabilities%20found-red';
-var SUCCESS_BADGE = 'no%20vulnerabilities-green';
-var NSP_LINE_ID = '[nsp status]';
+const README_PATH = path.join(__dirname, '../README.md');
+const FAIL_BADGE = 'vulnerabilities%20found-red';
+const SUCCESS_BADGE = 'no%20vulnerabilities-green';
+const NSP_LINE_ID = '[nsp status]';
 
 process.stdin.on('data', function(exitCodeBuf) {
 
-    var nspExitCode = parseInt(exitCodeBuf.toString(), 10);
+    let nspExitCode = parseInt(exitCodeBuf.toString(), 10);
 
     if (isNaN(nspExitCode)) {
         console.warn(exitCodeBuf.toString()); // eslint-disable-line no-console
         nspExitCode = 0;
     }
 
-    var readmeStr = fs.readFileSync(README_PATH).toString();
+    const readmeStr = fs.readFileSync(README_PATH).toString();
 
-    var out = processLines(nspExitCode, readmeStr);
+    const out = processLines(nspExitCode, readmeStr);
 
     // now write it back out
     fs.writeFileSync(README_PATH, out);
 });
 
 function processLines(exitCode, readmeStr) {
-    var lines = readmeStr.toString().split('\n');
-    var outLines = '';
+    const lines = readmeStr.toString().split('\n');
+    let outLines = '';
 
     lines.forEach(function(line) {
         if (line.indexOf(NSP_LINE_ID) > -1) {

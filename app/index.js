@@ -89,12 +89,12 @@ const npmGenerator = class extends Generator {
             }
         ];
 
-
         return self.prompt(prompts).then(function(answers) {
-            if (answers.taken) {
-                self.promptModuleName();
+            if (answers.taken === true) {
+                return self.promptModuleName();
             } else {
                 self.data.name = _.kebabCase(answers.name);
+                return null;
             }
         });
     }

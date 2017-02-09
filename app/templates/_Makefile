@@ -1,14 +1,20 @@
 #
 # Directories
 #
-ROOT		:= $(shell pwd)
-NODE_MODULES	:= $(ROOT)/node_modules
-NODE_BIN	:= $(NODE_MODULES)/.bin
+ROOT_SLASH	:= $(dir $(realpath $(firstword $(MAKEFILE_LIST))))
+ROOT		:= $(patsubst %/,%,$(ROOT_SLASH))
 TEST		:= $(ROOT)/test
-COVERAGE	:= $(ROOT)/coverage
 TOOLS		:= $(ROOT)/tools
 GITHOOKS_SRC	:= $(TOOLS)/githooks
 GITHOOKS_DEST	:= $(ROOT)/.git/hooks
+
+
+#
+# Generated Directories
+#
+NODE_MODULES	:= $(ROOT)/node_modules
+NODE_BIN	:= $(NODE_MODULES)/.bin
+COVERAGE	:= $(ROOT)/coverage
 
 
 #
@@ -33,70 +39,77 @@ COVERAGE_BADGE	:= $(TOOLS)/coverageBadge.js
 #
 # Files and globs
 #
+PACKAGE_JSON	:= $(ROOT)/package.json
+SHRINKWRAP	:= $(ROOT)/npm-shrinkwrap.json
+GITHOOKS	:= $(wildcard $(GITHOOKS_SRC)/*)
 <%_ if (data.testEntry) { _%>
 TEST_ENTRY	:= $(ROOT)/test/index.js
 <%_ } _%>
 <%_ if (data.coveralls) { _%>
-LCOV		:= $(ROOT)/coverage/lcov.info
+LCOV		:= $(COVERAGE)/lcov.info
 <%_ } _%>
-SHRINKWRAP	:= $(ROOT)/npm-shrinkwrap.json
 ALL_FILES	:= $(shell find $(ROOT) \
-			-not \( -path $(NODE_MODULES) -prune \)
+			-not \( -path $(NODE_MODULES) -prune \) \
+			-not \( -path $(COVERAGE) -prune \) \
 			-name '*.js' -type f)
-TEST_FILES	:= $(shell find $(TEST) -name '*.js' -type f)
 
 
 #
 # Targets
 #
 
-node_modules: package.json ## Install node_modules
+.PHONY: help
+help:
+	@perl -nle'print $& if m{^[a-zA-Z_-]+:.*?## .*$$}' $(MAKEFILE_LIST) \
+		| sort | awk 'BEGIN {FS = ":.*?## "}; \
+		{printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+
+
+$(NODE_MODULES): $(PACKAGE_JSON) ## Install node_modules
 	@$(NPM) install
 	@touch $(NODE_MODULES)
 
 
-.PHONY: help
-help:
-	@perl -nle'print $& if m{^[a-zA-Z_-]+:.*?## .*$$}' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
-
-
-.PHONY: all
-all: prepush ## Runs all build tasks
-
-
 .PHONY: githooks
-githooks: ## Symlink git hooks.
-	@for hook in $(GITHOOKS_SRC)/*; do ln -sf $${hook} $(GITHOOKS_DEST)/$${hook##*/}; done
+githooks: $(GITHOOKS) ## Symlink githooks
+	@$(foreach hook,\
+		$(GITHOOKS),\
+		ln -sf $(hook) $(GITHOOKS_DEST)/$(hook##*/);\
+	)
 
 
 .PHONY: lint
-lint: node_modules $(ESLINT) $(ALL_FILES) ## Run lint checker (eslint).
+lint: $(NODE_MODULES) $(ESLINT) $(ALL_FILES) ## Run lint checker (eslint).
 	@$(ESLINT) $(ALL_FILES)
 
 
 .PHONY: codestyle
-codestyle: node_modules $(JSCS) $(ALL_FILES) ## Run code style checker (jscs).
+codestyle: $(NODE_MODULES) $(JSCS) $(ALL_FILES) ## Run code style checker (jscs).
 	@$(JSCS) $(ALL_FILES)
 
 
 .PHONY: codestyle-fix
-codestyle-fix: node_modules $(JSCS) $(ALL_FILES) ## Run code style checker with auto whitespace fixing (jscs).
+codestyle-fix: $(NODE_MODULES) $(JSCS) $(ALL_FILES) ## Run code style checker with auto whitespace fixing (jscs).
 	@$(JSCS) $(ALL_FILES) --fix
 
 
 .PHONY: nsp
-nsp: node_modules $(NSP) $(NPM) $(NSP_BADGE) ## Run nsp. Shrinkwraps dependencies, checks for vulnerabilities.
+nsp: $(NODE_MODULES) $(NSP) $(NSP_BADGE) ## Run nsp. Shrinkwraps dependencies, checks for vulnerabilities.
+ifeq ($(wildcard $(SHRINKWRAP)),)
 	@$(NPM) shrinkwrap --dev
 	@($(NSP) check) | $(NSP_BADGE)
 	@rm $(SHRINKWRAP)
+else
+	@($(NSP) check) | $(NSP_BADGE)
+endif
 
 
 .PHONY: prepush
-prepush: node_modules lint codestyle coverage nsp ## Git pre-push hook task. Run before committing and pushing.
+prepush: $(NODE_MODULES) lint codestyle coverage nsp ## Git pre-push hook task. Run before committing and pushing.
 
 
 .PHONY: test
-test: node_modules $(MOCHA) ## Run unit tests.
+test: $(NODE_MODULES) $(MOCHA) ## Run unit tests.
 <%_ if (data.testEntry) { _%>
 	@$(MOCHA) -R spec --full-trace $(TEST_ENTRY)
 <%_ } else { _%>
@@ -105,7 +118,7 @@ test: node_modules $(MOCHA) ## Run unit tests.
 
 
 .PHONY: coverage
-coverage: node_modules $(ISTANBUL) $(_MOCHA) $(COVERAGE_BADGE) ## Run unit tests with coverage reporting. Generates reports into /coverage.
+coverage: $(NODE_MODULES) $(ISTANBUL) $(_MOCHA) $(COVERAGE_BADGE) ## Run unit tests with coverage reporting. Generates reports into /coverage.
 <%_ if (!data.coveralls) { _%>
 	@$(ISTANBUL) cover $(_MOCHA) --report json-summary --report html -- -R spec $(TEST_ENTRY)
 	@$(COVERAGE_BADGE)

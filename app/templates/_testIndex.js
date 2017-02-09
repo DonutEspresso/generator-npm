@@ -1,7 +1,7 @@
 'use strict';
 
 // external modules
-var assert = require('chai').assert;
+const assert = require('chai').assert;
 
 
 describe('<%= data.name %>', function() {

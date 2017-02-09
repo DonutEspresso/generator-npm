@@ -2,16 +2,16 @@
 
 'use strict';
 
-var fs = require('fs');
-var path = require('path');
+const fs = require('fs');
+const path = require('path');
 
-var COVERAGE_LINE_ID = '[manual coverage]';
-var START_CHAR = '/coverage-';
-var END_CHAR = ')]()';
+const COVERAGE_LINE_ID = '[manual coverage]';
+const START_CHAR = '/coverage-';
+const END_CHAR = ')]()';
 
-var report = require('./../coverage/coverage-summary.json');
-var pct = Math.round(report.total.lines.pct);
-var color;
+const report = require('./../coverage/coverage-summary.json');
+const pct = Math.round(report.total.lines.pct);
+let color;
 
 if (pct > 80) {
     color = 'green';
@@ -22,25 +22,25 @@ if (pct > 80) {
 }
 
 // read in the README
-var README_PATH = path.join(__dirname, '../README.md');
-var originalReadmeStr = fs.readFileSync(README_PATH).toString();
+const README_PATH = path.join(__dirname, '../README.md');
+const originalReadmeStr = fs.readFileSync(README_PATH).toString();
 // process it
-var out = processLines(originalReadmeStr);
+const out = processLines(originalReadmeStr);
 // now write it back out
 fs.writeFileSync(README_PATH, out);
 
 
 function processLines(readmeStr) {
 
-    var lines = readmeStr.toString().split('\n');
-    var outLines = '';
+    const lines = readmeStr.toString().split('\n');
+    let outLines = '';
 
     lines.forEach(function(line) {
         if (line.indexOf(COVERAGE_LINE_ID) > -1) {
-            var startIdx = line.indexOf(START_CHAR);
-            var endIdx = line.indexOf(END_CHAR);
+            const startIdx = line.indexOf(START_CHAR);
+            const endIdx = line.indexOf(END_CHAR);
 
-            var newLine = [
+            const newLine = [
                 line.slice(0, startIdx + 1),
                 'coverage-' + pct + '%25-' + color + '.svg',
                 line.slice(endIdx),
