@@ -52,7 +52,7 @@ ALL_FILES	:= $(shell find $(ROOT) \
 			-not \( -path $(NODE_MODULES) -prune \) \
 			-not \( -path $(COVERAGE) -prune \) \
 			-name '*.js' -type f)
-
+TEST_FILES	:= $(shell find $(TEST) -name '*.js' -type f)
 
 #
 # Targets
@@ -113,7 +113,7 @@ test: $(NODE_MODULES) $(MOCHA) ## Run unit tests.
 <%_ if (data.testEntry) { _%>
 	@$(MOCHA) -R spec --full-trace $(TEST_ENTRY)
 <%_ } else { _%>
-	@$(MOCHA) -R spec --full-trace
+	@$(MOCHA) -R spec --full-trace $(TEST_FILES)
 <%_ } _%>
 
 
@@ -123,11 +123,11 @@ coverage: $(NODE_MODULES) $(ISTANBUL) $(_MOCHA) $(COVERAGE_BADGE) ## Run unit te
 <%_ if (data.testEntry) { _%>
 	@$(ISTANBUL) cover $(_MOCHA) --report json-summary --report html -- -R spec $(TEST_ENTRY)
 <%_ } else { _%>
-	@$(ISTANBUL) cover $(_MOCHA) --report json-summary --report html -- -R spec
+	@$(ISTANBUL) cover $(_MOCHA) --report json-summary --report html -- -R spec $(TEST_FILES)
 <%_ } _%>
 	@$(COVERAGE_BADGE)
 <%_ } else { _%>
-	@$(ISTANBUL) cover $(_MOCHA) --report lcovonly -- -R spec
+	@$(ISTANBUL) cover $(_MOCHA) --report lcovonly -- -R spec $(TEST_FILES)
 <%_ } _%>
 
 
