@@ -58,16 +58,16 @@ TEST_FILES	:= $(shell find $(TEST) -name '*.js' -type f)
 # Targets
 #
 
+$(NODE_MODULES): $(PACKAGE_JSON) ## Install node_modules
+	@$(NPM) install
+	@touch $(NODE_MODULES)
+
+
 .PHONY: help
 help:
 	@perl -nle'print $& if m{^[a-zA-Z_-]+:.*?## .*$$}' $(MAKEFILE_LIST) \
 		| sort | awk 'BEGIN {FS = ":.*?## "}; \
 		{printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
-
-
-$(NODE_MODULES): $(PACKAGE_JSON) ## Install node_modules
-	@$(NPM) install
-	@touch $(NODE_MODULES)
 
 
 .PHONY: githooks
@@ -111,9 +111,9 @@ prepush: $(NODE_MODULES) lint codestyle coverage nsp ## Git pre-push hook task. 
 .PHONY: test
 test: $(NODE_MODULES) $(MOCHA) ## Run unit tests.
 <%_ if (data.testEntry) { _%>
-	@$(MOCHA) -R spec --full-trace $(TEST_ENTRY)
+	@$(MOCHA) -R spec --full-trace --no-exit --no-timeouts $(TEST_ENTRY)
 <%_ } else { _%>
-	@$(MOCHA) -R spec --full-trace $(TEST_FILES)
+	@$(MOCHA) -R spec --full-trace --no-exit --no-timeouts $(TEST_FILES)
 <%_ } _%>
 
 
