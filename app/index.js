@@ -160,6 +160,7 @@ const npmGenerator = class extends Generator {
             self.data.description = answers.description;
             self.data.authorName = answers.authorName;
             self.data.authorEmail = answers.authorEmail;
+            self.data.githubId = answers.githubId;
             self.data.repoUrl = answers.repoUrl;
             self.data.homepage = answers.homepage;
             self.data.keywords = answers.keywords.split(',');
