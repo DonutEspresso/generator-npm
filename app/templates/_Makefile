@@ -31,6 +31,7 @@ NSP		:= $(NODE_BIN)/nsp
 COVERALLS	:= $(NODE_BIN)/coveralls
 <%_ } _%>
 NSP_BADGE	:= $(TOOLS)/nspBadge.js
+CHANGELOG	:= $(TOOLS)/changelog.js
 <%_ if (!data.coveralls) { _%>
 COVERAGE_BADGE	:= $(TOOLS)/coverageBadge.js
 <%_ } _%>
@@ -76,6 +77,11 @@ githooks: $(GITHOOKS) ## Symlink githooks
 		$(GITHOOKS),\
 		ln -sf $(hook) $(GITHOOKS_DEST)/$(hook##*/);\
 	)
+
+
+.PHONY: changelog
+changelog: $(NODE_MODULES) $(CHANGELOG) ## Run changelog
+	@$(CHANGELOG) generate
 
 
 .PHONY: lint

@@ -243,6 +243,11 @@ const npmGenerator = class extends Generator {
         );
 
         self.fs.copy(
+            self.templatePath('_changelog.js'),
+            self.destinationPath('tools/changelog.js')
+        );
+
+        self.fs.copy(
             self.templatePath('pre-push'),
             self.destinationPath('tools/githooks/pre-push')
         );
