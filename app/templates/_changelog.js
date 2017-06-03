@@ -143,9 +143,9 @@ function getLastReleasedVersionTag() {
  */
 function getCommits(callback) {
 
-    const gitLogCmd = 'git log ' + getLastReleasedVersionTag()  + '..HEAD ' +
-        '--pretty=oneline';
-
+    const lastTag = getLastReleasedVersionTag();
+    const gitLogCmd = 'git log ' + ((lastTag) ? lastTag + '..HEAD' : 'HEAD') +
+        ' --pretty=oneline';
     const stdout = execSync(gitLogCmd).toString();
 
     // expected commit message would look like this:
