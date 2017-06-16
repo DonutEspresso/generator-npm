@@ -30,11 +30,43 @@ const COMMIT_TYPES = [
 const MD_RELEASE_HEADER = '## ';
 const MD_COMMIT_TYPE_HEADER = '#### ';
 
-// configurable globals. this special thing where the current
-// package.json version is the "staged" version to be published. use that to
-// generate the changelog. changing this value to "unreleased" would work just
+// configurable globals. this special thing where the current package.json
+// version is the "staged" version to be published. use that to generate the
+// changelog. changing this value to "unreleased" would work just
 // as well.
-let STR_CURRENT_VERSION = PKG_JSON.version;
+const STR_CURRENT_VERSION = PKG_JSON.version;
+
+
+/**
+ * duck type check for semver
+ * @function isSemver
+ * @param {String} str the semver string
+ * @return {Boolean}
+ */
+function isSemver(str) {
+
+    let valid = true;
+
+    if (!str) {
+        return false;
+    }
+
+    const split = str.split('.');
+
+    if (split.length !== 3) {
+        return false;
+    }
+
+    split.forEach(function(strNum) {
+        const parsed = parseInt(strNum);
+
+        if (Number.isNaN(parsed) === true) {
+            valid = false;
+        }
+    });
+
+    return valid;
+}
 
 
 /**
@@ -115,7 +147,7 @@ function getVersionsInChangelog() {
  */
 function getChangelogSplitByVersions() {
     // split existing changes file using the release headers
-    let versions = trim(CHANGES_MD.split('\n' + MD_RELEASE_HEADER));
+    const versions = trim(CHANGES_MD.split('\n' + MD_RELEASE_HEADER));
 
     // remove leading header, since we split by newline, so the very first
     // section may will have extra ## characters
@@ -143,7 +175,11 @@ function getLastReleasedVersionTag() {
  */
 function getCommits(callback) {
 
-    const lastTag = getLastReleasedVersionTag();
+    // this is usually run after `npm version {rev}`, so we actually want tag
+    // from previous release.
+    const allTags = getVersionsInGit();
+    // tags are in reverse chronological order
+    const lastTag = allTags.length > 1 ? allTags[1] : null;
     const gitLogCmd = 'git log ' + ((lastTag) ? lastTag + '..HEAD' : 'HEAD') +
         ' --pretty=oneline';
     const stdout = execSync(gitLogCmd).toString();
@@ -163,32 +199,34 @@ function getCommits(callback) {
         const fields = line.split(':');
         let commit;
 
-        // if commit message does not have a {verb}
-        if (fields.length === 1) {
+        // ignore all release commits.
+        if (!isSemver(line.split(' ')[1])) {
 
-            console.error('[changelog] bad commit message: ' + line);
-            console.error('[changelog] commit message must be of format: ');
-            console.error('[changelog] {type}: {message}');
-            console.error('[changelog] where type is one of the following ' +
-                'values:');
-            console.error('[changelog] ' + COMMIT_TYPES.join(', ') + '\n');
-            // TODO: uncomment this after our next release
-            // console.error('[changelog] exiting with error')
-            // process.exit(1);
-        }
-        // otherwise, commit msg confirms to expected template
-        else {
-            commit = {
-                gitsha: fields[0].split(' ')[0].trim(),
-                type: fields[0].split(' ')[1].trim().toLowerCase(),
-                msg: fields[1].trim()
-            };
-        }
+            // if commit message does not have a {verb}.
+            if (fields.length === 1) {
+                console.error('[changelog] bad commit message: ' + line);
+                console.error('[changelog] commit message must be of format: ');
+                console.error('[changelog] {type}: {message}');
+                console.error('[changelog] where type is one of the ' +
+                    'following values:');
+                console.error('[changelog] ' + COMMIT_TYPES.join(', ') + '\n');
+                console.error('[changelog] exiting with error');
+                process.exit(1);
+            }
+            // otherwise, commit msg confirms to expected template
+            else {
+                commit = {
+                    gitsha: fields[0].split(' ')[0].trim(),
+                    type: fields[0].split(' ')[1].trim().toLowerCase(),
+                    msg: fields[1].trim()
+                };
+            }
 
-        // add a github link url
-        if (commit) {
-            commit.url = PKG_JSON.homepage + '/commit/' + commit.gitsha;
-            rawCommits.push(commit);
+            // add a github link url
+            if (commit) {
+                commit.url = PKG_JSON.homepage + '/commit/' + commit.gitsha;
+                rawCommits.push(commit);
+            }
         }
     });
 
@@ -334,11 +372,11 @@ function releaseChangelog() {
 function verifyChangelog() {
 
     // get all the released versions from git tags
-    let gitVersions = getVersionsInGit({
+    const gitVersions = getVersionsInGit({
         trimVPrefix: true
     });
     // add add current package.json version to gitVersions
-    gitVersions.unshift(STR_CURRENT_VERSION);
+    // gitVersions.unshift(STR_CURRENT_VERSION);
 
     // get all the released versions found in changelog
     const changelogVersions = getVersionsInChangelog();
