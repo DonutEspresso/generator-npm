@@ -149,6 +149,10 @@ function getChangelogSplitByVersions() {
     // split existing changes file using the release headers
     const versions = trim(CHANGES_MD.split('\n' + MD_RELEASE_HEADER));
 
+    if (versions.length === 0) {
+        return [];
+    }
+
     // remove leading header, since we split by newline, so the very first
     // section may will have extra ## characters
     versions[0] = versions[0].replace(MD_RELEASE_HEADER, '');
@@ -290,7 +294,8 @@ function updateChangelog(md) {
     // see what the first section is - if it matches the current unreleased
     // version, get rid of it. otherwise, assume it is from a proper previous
     // release, in which case we can safely move on.
-    if (versions[0].indexOf(STR_CURRENT_VERSION) === 0) {
+    if (versions.length > 0 &&
+        versions[0].indexOf(STR_CURRENT_VERSION) === 0) {
         versions = versions.slice(1);
     }
 
