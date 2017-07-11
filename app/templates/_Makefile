@@ -84,6 +84,11 @@ changelog: $(NODE_MODULES) $(CHANGELOG) ## Run changelog
 	@$(CHANGELOG) generate
 
 
+.PHONY: release
+release: $(NODE_MODULES) $(CHANGELOG) ## Create a release
+	@$(CHANGELOG) release
+
+
 .PHONY: lint
 lint: $(NODE_MODULES) $(ESLINT) $(ALL_FILES) ## Run lint checker (eslint).
 	@$(ESLINT) $(ALL_FILES)
