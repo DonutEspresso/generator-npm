@@ -54,6 +54,10 @@ make codestyle-fix
 
 ## License
 
-Copyright (c) <%= data.year %> <%= data.authorName %>
+Copyright (c) <%= data.year %> <%= data.copyrightOwner %>
 
-Licensed under the MIT license.
+<%_ if (data.license.toUpperCase() === 'UNLICENSED') { _%>
+For internal use only.
+<%_ } else { _%>
+Licensed under the <%= data.license %> license.
+<%_ } _%>

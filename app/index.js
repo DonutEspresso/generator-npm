@@ -128,6 +128,10 @@ const npmGenerator = class extends Generator {
                 message: 'repo homepage'
             },
             {
+                name: 'copyrightOwner',
+                message: 'copyright owner'
+            },
+            {
                 name: 'keywords',
                 message: 'keywords (comma separated)'
             },
@@ -162,6 +166,7 @@ const npmGenerator = class extends Generator {
             self.data.authorEmail = answers.authorEmail;
             self.data.githubId = answers.githubId;
             self.data.repoUrl = answers.repoUrl;
+            self.data.copyrightOwner = answers.copyrightOwner;
             self.data.homepage = answers.homepage;
             self.data.keywords = answers.keywords.split(',');
             self.data.license = answers.license;
