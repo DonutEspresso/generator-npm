@@ -178,7 +178,7 @@ const git = {
 
         if (opts && opts.trimVPrefix === true) {
             versions = versions.map(function(version) {
-                return version.split('v')[1];
+                return version.split('v')[1] || version;
             });
         }
 
@@ -536,9 +536,9 @@ function categorizeCommits(rawCommits) {
  */
 function determineNextSemver(categorizedCommits) {
 
-    const breaking = categorizedCommits.breaking;
-    const newFeatures = categorizedCommits.new;
-    const updates = categorizedCommits.update;
+    const breaking = categorizedCommits.Breaking;
+    const newFeatures = categorizedCommits.New;
+    const updates = categorizedCommits.Update;
     // get last version from git, split so we can increment
     const lastReleasedVersion = git.getLastReleasedVersion();
 
