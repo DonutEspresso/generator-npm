@@ -143,19 +143,26 @@ const npmGenerator = class extends Generator {
             {
                 name: 'testEntry',
                 type: 'confirm',
-                message: 'unit test entry point',
+                message: 'Do you want a unit test entry point? ' +
+                    'By default, all test files are run in parallel, ' +
+                    'in a non deterministic order. Choose this option if ' +
+                    'your module requires tests to be run in serial order.',
                 default: false
-            },
-            {
-                name: 'coveralls',
-                type: 'confirm',
-                message: 'coveralls integration',
-                default: true
             },
             {
                 name: 'travis',
                 type: 'confirm',
-                message: 'travis integration',
+                message: 'Do you want to add a Travis badge to the README? ' +
+                    'Choose this option if you plan to use Travis CI.',
+                default: true
+            },
+            {
+                name: 'coveralls',
+                type: 'confirm',
+                message: 'Do you want Coveralls integration? This will add ' +
+                    'a Coveralls badge to the README, and allow testing ' +
+                    'coverage to be automatically reported by Travis builds. ' +
+                    'This is applicable only when using Travis CI.',
                 default: true
             }
         ];
