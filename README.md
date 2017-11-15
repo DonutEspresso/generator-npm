@@ -10,8 +10,8 @@ Make sure you have yeoman installed:
 $ npm install -g yo
 ```
 
-Then clone the module into your global node_modules directory, then use it with
-yeoman:
+Clone this repo into your global node_modules directory, run `npm install` in
+the cloned repo, then use it with yeoman:
 
 ```sh
 $ yo npm
