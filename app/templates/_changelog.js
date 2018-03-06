@@ -300,25 +300,28 @@ const md = {
             changelogVersions.shift();
         }
 
-        function failVerification() {
+        // assert that there is no diff in elements between both arrays
+        var missingGit = changelogVersions.filter(
+            (v) => gitVersions.indexOf(v) === -1
+        );
+        var missingChangelog = gitVersions.filter(
+            (v) => changelogVersions.indexOf(v) === -1
+        );
+
+        if (missingGit.length + missingChangelog.length > 0) {
             console.warn('[changelog] versions found in git does not match ' +
                 'versions found in changelog!');
-            console.error('[changelog] git versions:', gitVersions);
-            console.error('[changelog] changelog versions:', changelogVersions);
-            console.error('[changelog] exiting with error');
+
+            if (missingGit.length > 0) {
+                console.warn('[changelog] missing git versions: ', missingGit);
+            }
+
+            if (missingChangelog.length > 0) {
+                console.warn('[changelog] missing changelog versions: ',
+                    missingChangelog);
+            }
+
             process.exit(1);
-        }
-
-        // assert we found same number of versions in both
-        if (gitVersions.length !== changelogVersions.length) {
-            failVerification();
-        }
-
-        // assert that there is no diff in elements between both arrays
-        const diff = difference(gitVersions, changelogVersions);
-
-        if (diff.length > 0) {
-            failVerification();
         }
     },
 
@@ -482,20 +485,6 @@ function capitalize(str) {
 function trim(arr) {
     return arr.filter(function(i) {
         return (i !== '' && i !== null && typeof i !== 'undefined');
-    });
-}
-
-
-/**
- * determine difference between two arrays. return an array of different
- * elements.
- * @param {Array} arr1 first array to compare
- * @param {Array} arr2 secon array to compare
- * @return {Array}
- */
-function difference(arr1, arr2) {
-    return arr1.filter(function(i) {
-        return arr2.indexOf(i) < 0;
     });
 }
 
