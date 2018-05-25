@@ -21,6 +21,7 @@ COVERAGE	:= $(ROOT)/coverage
 # Tools and binaries
 #
 NPM		:= npm
+YARN		:= yarn
 ESLINT		:= $(NODE_BIN)/eslint
 JSCS		:= $(NODE_BIN)/jscs
 MOCHA		:= $(NODE_BIN)/mocha
@@ -60,7 +61,7 @@ TEST_FILES	:= $(shell find $(TEST) -name '*.js' -type f)
 #
 
 $(NODE_MODULES): $(PACKAGE_JSON) ## Install node_modules
-	@$(NPM) install
+	@$(YARN)
 	@touch $(NODE_MODULES)
 
 
