@@ -301,12 +301,12 @@ const md = {
         }
 
         // assert that there is no diff in elements between both arrays
-        var missingGit = changelogVersions.filter(
-            (v) => gitVersions.indexOf(v) === -1
-        );
-        var missingChangelog = gitVersions.filter(
-            (v) => changelogVersions.indexOf(v) === -1
-        );
+        const missingGit = changelogVersions.filter(function(v) {
+            return gitVersions.indexOf(v) === -1;
+        });
+        const missingChangelog = gitVersions.filter(function(v) {
+            return changelogVersions.indexOf(v) === -1;
+        });
 
         if (missingGit.length + missingChangelog.length > 0) {
             console.warn('[changelog] versions found in git does not match ' +
