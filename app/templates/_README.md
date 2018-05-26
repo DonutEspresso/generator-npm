@@ -11,8 +11,6 @@
 <%_ } _%>
 [![Dependency Status](https://david-dm.org/<%= data.githubId %>/<%= data.name %>.svg)](https://david-dm.org/<%= data.githubId %>/<%= data.name %>)
 [![devDependency Status](https://david-dm.org/<%= data.githubId %>/<%= data.name %>/dev-status.svg)](https://david-dm.org/<%= data.githubId %>/<%= data.name %>#info=devDependencies)
-[![bitHound Score](https://www.bithound.io/github/<%= data.githubId %>/<%= data.name %>/badges/score.svg)](https://www.bithound.io/github/<%= data.githubId %>/<%= data.name %>/master)
-[![nsp status](https://img.shields.io/badge/NSP%20status-no%20vulnerabilities-green.svg)](https://travis-ci.org/<%= data.githubId %>/<%= data.name %>)
 
 > <%= data.description %>
 

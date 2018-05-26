@@ -23,15 +23,12 @@ COVERAGE	:= $(ROOT)/coverage
 NPM		:= npm
 YARN		:= yarn
 ESLINT		:= $(NODE_BIN)/eslint
-JSCS		:= $(NODE_BIN)/jscs
 MOCHA		:= $(NODE_BIN)/mocha
 _MOCHA		:= $(NODE_BIN)/_mocha
 ISTANBUL	:= $(NODE_BIN)/istanbul
-NSP		:= $(NODE_BIN)/nsp
 <%_ if (data.coveralls) { _%>
 COVERALLS	:= $(NODE_BIN)/coveralls
 <%_ } _%>
-NSP_BADGE	:= $(TOOLS)/nspBadge.js
 CHANGELOG	:= $(TOOLS)/changelog.js
 <%_ if (!data.coveralls) { _%>
 COVERAGE_BADGE	:= $(TOOLS)/coverageBadge.js
@@ -42,7 +39,6 @@ COVERAGE_BADGE	:= $(TOOLS)/coverageBadge.js
 # Files and globs
 #
 PACKAGE_JSON	:= $(ROOT)/package.json
-SHRINKWRAP	:= $(ROOT)/npm-shrinkwrap.json
 GITHOOKS	:= $(wildcard $(GITHOOKS_SRC)/*)
 <%_ if (data.testEntry) { _%>
 TEST_ENTRY	:= $(ROOT)/test/index.js
@@ -95,29 +91,13 @@ lint: $(NODE_MODULES) $(ESLINT) $(ALL_FILES) ## Run lint checker (eslint).
 	@$(ESLINT) $(ALL_FILES)
 
 
-.PHONY: codestyle
-codestyle: $(NODE_MODULES) $(JSCS) $(ALL_FILES) ## Run code style checker (jscs).
-	@$(JSCS) $(ALL_FILES)
-
-
-.PHONY: codestyle-fix
-codestyle-fix: $(NODE_MODULES) $(JSCS) $(ALL_FILES) ## Run code style checker with auto whitespace fixing (jscs).
-	@$(JSCS) $(ALL_FILES) --fix
-
-
-.PHONY: nsp
-nsp: $(NODE_MODULES) $(NSP) $(NSP_BADGE) ## Run nsp. Shrinkwraps dependencies, checks for vulnerabilities.
-ifeq ($(wildcard $(SHRINKWRAP)),)
-	@$(NPM) shrinkwrap --dev
-	@($(NSP) check) | $(NSP_BADGE)
-	@rm $(SHRINKWRAP)
-else
-	@($(NSP) check) | $(NSP_BADGE)
-endif
+.PHONY: security
+security: $(NODE_MODULES) ## Check for dependency vulnerabilities.
+	@$(NPM) audit
 
 
 .PHONY: prepush
-prepush: $(NODE_MODULES) lint codestyle coverage nsp ## Git pre-push hook task. Run before committing and pushing.
+prepush: $(NODE_MODULES) lint coverage security ## Git pre-push hook task. Run before committing and pushing.
 
 
 .PHONY: test

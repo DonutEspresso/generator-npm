@@ -235,11 +235,6 @@ const npmGenerator = class extends Generator {
         );
 
         self.fs.copy(
-            self.templatePath('jscsrc'),
-            self.destinationPath('.jscsrc')
-        );
-
-        self.fs.copy(
             self.templatePath('gitignore'),
             self.destinationPath('.gitignore')
         );
@@ -247,11 +242,6 @@ const npmGenerator = class extends Generator {
         self.fs.copy(
             self.templatePath('index.js'),
             self.destinationPath('lib/index.js')
-        );
-
-        self.fs.copy(
-            self.templatePath('_nspBadge.js'),
-            self.destinationPath('tools/nspBadge.js')
         );
 
         self.fs.copy(
@@ -280,7 +270,6 @@ const npmGenerator = class extends Generator {
     }
 
     install() {
-
         var self = this;
         self.npmInstall();
     }

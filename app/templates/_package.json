@@ -23,14 +23,12 @@
     } %>
   ],
   "devDependencies": {
-    "chai": "^3.5.0",
+    "chai": "^4.1.2",
 <%_ if (data.coveralls) { _%>
-    "coveralls": "^2.11.14",
+    "coveralls": "^3.0.1",
 <%_ } _%>
-    "eslint": "^3.14.1",
+    "eslint": "^4.19.1",
     "istanbul": "^0.4.5",
-    "jscs": "^3.0.7",
-    "mocha": "^3.2.0",
-    "nsp": "^2.6.2"
+    "mocha": "^5.2.0"
   }
 }
