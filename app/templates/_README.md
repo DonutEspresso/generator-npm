@@ -44,12 +44,6 @@ Before committing, lint and test your code using the included Makefile:
 make prepush
 ```
 
-If you have style errors, you can auto fix whitespace issues by running:
-
-```sh
-make codestyle-fix
-```
-
 ## License
 
 Copyright (c) <%= data.year %> <%= data.copyrightOwner %>
