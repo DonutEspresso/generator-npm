@@ -120,11 +120,7 @@
 
         // stylistic
         "array-bracket-newline": [ 2, "consistent" ],
-        "array-bracket-spacing": [ 2, "always", {
-            "singleValue": true,
-            "objectsInArrays": false,
-            "arraysInArrays": false
-        }],
+        "array-bracket-spacing": [ 2, "never" ],
         "block-spacing": [ 2, "always" ],
         "camelcase": [ 2, {
             "properties": "always"
