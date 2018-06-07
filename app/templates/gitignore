@@ -25,3 +25,4 @@ Session.vim
 # Unit Test Coverage #
 ######################
 coverage/
+.nyc_output/
