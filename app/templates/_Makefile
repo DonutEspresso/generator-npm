@@ -96,6 +96,7 @@ lint: $(NODE_MODULES) $(ESLINT) $(ALL_FILES) ## Run lint checker (eslint).
 
 .PHONY: security
 security: $(NODE_MODULES) ## Check for dependency vulnerabilities.
+	@$(NPM) install --package-lock-only
 	@$(NPM) audit
 
 
@@ -113,19 +114,20 @@ test: $(NODE_MODULES) $(MOCHA) ## Run unit tests.
 
 
 .PHONY: coverage
-coverage: $(NODE_MODULES) $(ISTANBUL) $(COVERAGE_BADGE) ## Run unit tests with coverage reporting. Generates reports into /coverage.
 <%_ if (!data.coveralls) { _%>
-	@$(NYC) --report=json-summary --report=html make test
+coverage: $(NODE_MODULES) $(NYC) $(COVERAGE_BADGE) ## Run unit tests with coverage reporting. Generates reports into /coverage.
+	@$(NYC) --reporter=json-summary --reporter=html make test
 	@$(COVERAGE_BADGE)
 <%_ } else { _%>
-	@$(NYC) --report=json-summary --report=html make test
+coverage: $(NODE_MODULES) $(NYC) ## Run unit tests with coverage reporting. Generates reports into /coverage.
+	@$(NYC) --reporter=html --reporter=text make test
 <%_ } _%>
 
 
 <%_ if (data.coveralls) { _%>
 .PHONY: report-coverage ## Report unit test coverage to coveralls
-report-coverage: coverage
-	@cat $(LCOV) | $(COVERALLS)
+report-coverage: $(NODE_MODULES) $(NYC) ## Run unit tests with coverage reporting. Generates reports into /coverage.
+	@$(NYC) report --reporter=text-lcov make test | $(COVERALLS)
 
 
 <%_ } _%>
