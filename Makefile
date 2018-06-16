@@ -12,17 +12,10 @@ TMP		:= $(ROOT)/tmp
 # Tools and binaries
 #
 ESLINT		:= $(NODE_BIN)/eslint
-JSCS		:= $(NODE_BIN)/jscs
+PRETTIER		:= $(NODE_BIN)/prettier
 NSP		:= $(NODE_BIN)/nsp
 NPM		:= npm
 NSP_BADGE	:= $(TOOLS)/nspBadge.js
-
-
-#
-# Directories
-#
-LIB_FILES	:= $(ROOT)/lib
-
 
 #
 # Files and globs
@@ -31,7 +24,9 @@ GIT_HOOK_SRC	= '../../tools/githooks/pre-push'
 GIT_HOOK_DEST	= '.git/hooks/pre-push'
 TEST_ENTRY	:= $(ROOT)/test/index.js
 SHRINKWRAP	:= $(ROOT)/npm-shrinkwrap.json
-ALL_FILES	:= $(ROOT)/app/index.js
+ALL_FILES	:= $(shell find $(ROOT) \
+			-not \( -path $(NODE_MODULES) -prune \) \
+			-name '*.js' -type f)
 
 
 
@@ -59,18 +54,13 @@ githooks: ## Install git pre-push hooks.
 
 
 .PHONY: lint
-lint: node_modules $(ALL_FILES) ## Run lint checker (eslint).
+lint: $(NODE_MODULES) $(ESLINT) $(ALL_FILES) ## Run lint checker (eslint).
 	@$(ESLINT) $(ALL_FILES)
 
 
-.PHONY: codestyle
-codestyle: node_modules $(ALL_FILES) ## Run code style checker (jscs).
-	@$(JSCS) $(ALL_FILES)
-
-
-.PHONY: codestyle-fix
-codestyle-fix: node_modules $(ALL_FILES) ## Run code style checker with auto whitespace fixing.
-	@$(JSCS) $(ALL_FILES) --fix
+.PHONY: lint-fix
+lint-fix: $(NODE_MODULES) $(PRETTIER) $(ALL_FILES) ## Reprint code (prettier).
+	@$(PRETTIER) --write $(ALL_FILES)
 
 
 .PHONY: nsp

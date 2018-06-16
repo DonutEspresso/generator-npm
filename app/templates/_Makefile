@@ -94,9 +94,11 @@ release: $(NODE_MODULES) $(CHANGELOG) ## Create a release
 lint: $(NODE_MODULES) $(ESLINT) $(ALL_FILES) ## Run lint checker (eslint).
 	@$(ESLINT) $(ALL_FILES)
 
+
 .PHONY: lint-fix
 lint-fix: $(NODE_MODULES) $(PRETTIER) $(ALL_FILES) ## Reprint code (prettier).
 	@$(PRETTIER) --write $(ALL_FILES)
+
 
 .PHONY: security
 security: $(NODE_MODULES) ## Check for dependency vulnerabilities.
