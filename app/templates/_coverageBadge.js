@@ -29,8 +29,14 @@ const out = processLines(originalReadmeStr);
 // now write it back out
 fs.writeFileSync(README_PATH, out);
 
-
-function processLines(readmeStr) { /* eslint-disable-line require-jsdoc */
+/**
+ * Process lines
+ * @function processLines
+ * @param {String} readmeStr - readme
+ * @returns {String} readme
+ */
+function processLines(readmeStr) {
+    /* eslint-disable-line require-jsdoc */
 
     const lines = readmeStr.toString().split('\n');
     let outLines = '';

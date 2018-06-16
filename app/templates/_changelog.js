@@ -18,14 +18,14 @@ const ACTION = process.argv.length === 3 && process.argv[2];
 const PKG_JSON = JSON.parse(fs.readFileSync(PKGJSON_PATH).toString());
 let CHANGES_MD = fs.readFileSync(CHANGES_MD_PATH).toString();
 const COMMIT_TYPES = [
-    'fix',      // for a bug fix
-    'update',   // for a backwards-compatible enhancement
-    'new',      // implemented a new feature
+    'fix', // for a bug fix
+    'update', // for a backwards-compatible enhancement
+    'new', // implemented a new feature
     'breaking', // for a backwards-incompatible enhancement or feature
-    'docs',     // changes to documentation only
-    'build',    // changes to build process only
-    'upgrade',  // for a dependency upgrade
-    'chore'     // for refactoring, adding tests, etc., anything not user-facing
+    'docs', // changes to documentation only
+    'build', // changes to build process only
+    'upgrade', // for a dependency upgrade
+    'chore' // for refactoring, adding tests, etc., anything not user-facing
 ];
 const MD_RELEASE_HEADER = '## ';
 const MD_COMMIT_TYPE_HEADER = '#### ';
@@ -34,7 +34,6 @@ const MD_COMMIT_TYPE_HEADER = '#### ';
 // version is the "staged" version to be published. use that to generate the
 // changelog.
 const STR_UNRELEASED_HEADER = 'Unreleased';
-
 
 /**
  * semver utility
@@ -48,7 +47,6 @@ const semver = {
      * @return {Boolean}
      */
     gt(v1, v2) {
-
         const v1s = v1.split('.').map(function(digit) {
             return parseInt(digit, 10);
         });
@@ -61,7 +59,7 @@ const semver = {
         } else if (v1s[0] === v2s[0]) {
             if (v1s[1] > v2s[1]) {
                 return true;
-            }  else if (v1s[1] === v2s[1]) {
+            } else if (v1s[1] === v2s[1]) {
                 if (v1s[2] > v2s[2]) {
                     return true;
                 }
@@ -78,13 +76,10 @@ const semver = {
      * @return {Boolean}
      */
     eq(v1, v2) {
-
         const v1s = v1.split('.');
         const v2s = v2.split('.');
 
-        return (v1s[0] === v2s[0] &&
-                v1s[1] === v2s[1] &&
-                v1s[2] === v2s[2]);
+        return v1s[0] === v2s[0] && v1s[1] === v2s[1] && v1s[2] === v2s[2];
     },
 
     /**
@@ -93,7 +88,6 @@ const semver = {
      * @return {String}
      */
     patch(version) {
-
         const newVersion = version.split('.');
         newVersion[2] = parseInt(newVersion[2]) + 1;
 
@@ -106,7 +100,6 @@ const semver = {
      * @return {String}
      */
     minor(version) {
-
         const newVersion = version.split('.');
         newVersion[1] = parseInt(newVersion[1]) + 1;
         newVersion[2] = 0;
@@ -120,7 +113,6 @@ const semver = {
      * @return {String}
      */
     major(version) {
-
         const newVersion = version.split('.');
         newVersion[0] = parseInt(newVersion[0]) + 1;
         newVersion[1] = 0;
@@ -159,7 +151,6 @@ const semver = {
         return valid;
     }
 };
-
 
 const git = {
     /**
@@ -204,14 +195,14 @@ const git = {
      * @returns {Array} an array of objects describing commits
      */
     getNewCommits(callback) {
-
         // this is usually run after `npm version {rev}`, so we actually want
         // tag from previous release.
         const allTags = git.getVersions();
         // tags are in reverse chronological order
         const lastTag = allTags.length >= 1 ? allTags[0] : null;
-        const gitLogCmd = 'git log ' +
-            ((lastTag) ? lastTag + '..HEAD' : 'HEAD') +
+        const gitLogCmd =
+            'git log ' +
+            (lastTag ? lastTag + '..HEAD' : 'HEAD') +
             ' --pretty=oneline';
         const stdout = execSync(gitLogCmd).toString();
 
@@ -232,17 +223,20 @@ const git = {
 
             // ignore all release commits.
             if (!semver.isSemver(line.split(' ')[1])) {
-
                 // if commit message does not have a {verb}.
                 if (fields.length === 1) {
                     console.error('[changelog] bad commit message: ' + line);
-                    console.error('[changelog] commit message must be of ' +
-                        'format: ');
+                    console.error(
+                        '[changelog] commit message must be of format: '
+                    );
                     console.error('[changelog] {type}: {message}');
-                    console.error('[changelog] where type is one of the ' +
-                        'following values:');
-                    console.error('[changelog] ' + COMMIT_TYPES.join(', ') +
-                        '\n');
+                    console.error(
+                        '[changelog] where type is one of the ' +
+                            'following values:'
+                    );
+                    console.error(
+                        '[changelog] ' + COMMIT_TYPES.join(', ') + '\n'
+                    );
                     console.error('[changelog] exiting with error');
                     process.exit(1);
                 }
@@ -250,7 +244,10 @@ const git = {
                 else {
                     commit = {
                         gitsha: fields[0].split(' ')[0].trim(),
-                        type: fields[0].split(' ')[1].trim().toLowerCase(),
+                        type: fields[0]
+                            .split(' ')[1]
+                            .trim()
+                            .toLowerCase(),
                         msg: fields[1].trim()
                     };
                 }
@@ -267,8 +264,6 @@ const git = {
     }
 };
 
-
-
 const md = {
     /**
      * verify the following:
@@ -281,7 +276,6 @@ const md = {
      * @return {Boolean} return true if ok, false if not ok
      */
     verify(release) {
-
         // get all the released versions from git tags
         const gitVersions = git.getVersions({
             trimVPrefix: true
@@ -309,16 +303,20 @@ const md = {
         });
 
         if (missingGit.length + missingChangelog.length > 0) {
-            console.warn('[changelog] versions found in git does not match ' +
-                'versions found in changelog!');
+            console.warn(
+                '[changelog] versions found in git does not match ' +
+                    'versions found in changelog!'
+            );
 
             if (missingGit.length > 0) {
                 console.warn('[changelog] missing git versions: ', missingGit);
             }
 
             if (missingChangelog.length > 0) {
-                console.warn('[changelog] missing changelog versions: ',
-                    missingChangelog);
+                console.warn(
+                    '[changelog] missing changelog versions: ',
+                    missingChangelog
+                );
             }
 
             process.exit(1);
@@ -346,7 +344,6 @@ const md = {
      * @returns {Array}
      */
     getVersions() {
-
         // get each version of the changelog split by section header (##)
         const sections = this.splitByVersions();
 
@@ -385,7 +382,6 @@ const md = {
      * @returns {String} markdown string
      */
     generateUnreleasedMd(version, rawCommits) {
-
         const categorizedCommits = categorizeCommits(rawCommits);
 
         // create markdown header section for this new "release" using the
@@ -394,16 +390,21 @@ const md = {
         const commitTypes = Object.keys(categorizedCommits).sort();
 
         commitTypes.forEach(function(commitType) {
-
             const commits = categorizedCommits[commitType];
-            const capcaseType = commitType[0].toUpperCase() +
-                                commitType.slice(1);
+            const capcaseType =
+                commitType[0].toUpperCase() + commitType.slice(1);
 
             markdown += '\n' + MD_COMMIT_TYPE_HEADER + capcaseType + '\n\n';
 
             commits.forEach(function(commit) {
-                markdown += '* ' + commit.msg + ' ([' +
-                    commit.gitsha.slice(0, 7) + '](' + commit.url + '))\n';
+                markdown +=
+                    '* ' +
+                    commit.msg +
+                    ' ([' +
+                    commit.gitsha.slice(0, 7) +
+                    '](' +
+                    commit.url +
+                    '))\n';
             });
         });
 
@@ -417,14 +418,15 @@ const md = {
      * @return {undefined}
      */
     update(newMd) {
-
         let versions = this.splitByVersions();
 
         // see what the first section is - if it matches the current unreleased
         // version, get rid of it. otherwise, assume it is from a proper
         // previous release, in which case we can safely move on.
-        if (versions.length > 0 &&
-            versions[0].indexOf(STR_UNRELEASED_HEADER) === 0) {
+        if (
+            versions.length > 0 &&
+            versions[0].indexOf(STR_UNRELEASED_HEADER) === 0
+        ) {
             versions = versions.slice(1);
         }
 
@@ -434,7 +436,6 @@ const md = {
         // join it back into a string and write it back to file
         this.write(versions.join('\n' + MD_RELEASE_HEADER));
     },
-
 
     /**
      * changes the current unreleased header to the actual version being
@@ -465,7 +466,6 @@ const md = {
     }
 };
 
-
 /**
  * capitalize first letter of string
  * @param {String} str the string to capitalize
@@ -475,7 +475,6 @@ function capitalize(str) {
     return str[0].toUpperCase() + str.slice(1);
 }
 
-
 /**
  * filter falsy values from array
  * @function trim
@@ -484,10 +483,9 @@ function capitalize(str) {
  */
 function trim(arr) {
     return arr.filter(function(i) {
-        return (i !== '' && i !== null && typeof i !== 'undefined');
+        return i !== '' && i !== null && typeof i !== 'undefined';
     });
 }
-
 
 /**
  * categorize raw commits into types of commits for consumption into md.
@@ -496,13 +494,11 @@ function trim(arr) {
  * @return {Object}
  */
 function categorizeCommits(rawCommits) {
-
     const categorizedCommits = {};
 
     // create a bucket of rawCommits by type:
     // { fixes: [], upgrades: [], breaking: [] }
     rawCommits.forEach(function(commit) {
-
         const capType = capitalize(commit.type);
 
         if (!categorizedCommits.hasOwnProperty(capType)) {
@@ -515,7 +511,6 @@ function categorizeCommits(rawCommits) {
     return categorizedCommits;
 }
 
-
 /**
  * given categorized commits, determine what the semver of the next semver
  * should be using the latest commit from origin/master as the last version.
@@ -524,7 +519,6 @@ function categorizeCommits(rawCommits) {
  * @return {String}
  */
 function determineNextSemver(categorizedCommits) {
-
     const breaking = categorizedCommits.Breaking;
     const newFeatures = categorizedCommits.New;
     const updates = categorizedCommits.Update;
@@ -547,8 +541,10 @@ function determineNextSemver(categorizedCommits) {
         };
     }
     // any backwards compatible updates or new features are a minor rev
-    else if ((newFeatures && newFeatures.length >= 1) ||
-               (updates && updates.length >= 1)) {
+    else if (
+        (newFeatures && newFeatures.length >= 1) ||
+        (updates && updates.length >= 1)
+    ) {
         return {
             version: semver.minor(lastReleasedVersion),
             type: 'minor'
@@ -562,9 +558,6 @@ function determineNextSemver(categorizedCommits) {
         };
     }
 }
-
-
-
 
 // main function, do something based on argv
 if (ACTION === 'generate') {
