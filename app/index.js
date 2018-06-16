@@ -271,7 +271,7 @@ const npmGenerator = class extends Generator {
 
     install() {
         var self = this;
-        self.npmInstall();
+        self.yarnInstall();
     }
 };
 
