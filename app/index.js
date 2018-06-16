@@ -254,6 +254,16 @@ const npmGenerator = class extends Generator {
             self.destinationPath('tools/githooks/pre-push')
         );
 
+        self.fs.copy(
+            self.templatePath('prettierignore'),
+            self.destinationPath('.prettierignore')
+        );
+
+        self.fs.copy(
+            self.templatePath('prettierrc'),
+            self.destinationPath('.prettierrc')
+        );
+
         if (!self.data.coveralls) {
             self.fs.copy(
                 self.templatePath('_coverageBadge.js'),
