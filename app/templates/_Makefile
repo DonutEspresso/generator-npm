@@ -86,7 +86,7 @@ changelog: $(NODE_MODULES) $(CHANGELOG) ## Run changelog
 
 
 .PHONY: release
-release: $(NODE_MODULES) $(CHANGELOG) ## Create a release
+release: $(NODE_MODULES) $(CHANGELOG) ## Versions, tags, and updates changelog based on commit messages
 	@$(CHANGELOG) release
 
 
@@ -96,8 +96,9 @@ lint: $(NODE_MODULES) $(ESLINT) $(ALL_FILES) ## Run lint checker (eslint).
 
 
 .PHONY: lint-fix
-lint-fix: $(NODE_MODULES) $(PRETTIER) $(ALL_FILES) ## Reprint code (prettier).
+lint-fix: $(NODE_MODULES) $(PRETTIER) $(ALL_FILES) ## Reprint code (prettier, eslint).
 	@$(PRETTIER) --write $(ALL_FILES)
+	@$(ESLINT) --fix $(ALL_FILES)
 
 
 .PHONY: security

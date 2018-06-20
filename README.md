@@ -22,8 +22,10 @@ $ yo npm
 The generator creates a directory structure like so:
 
 ```
-.eslintrc
-.jscsrc
+.eslintrc.js
+.prettierrc.js
+.prettierignore
+.travis.yml
 Makefile
 package.json
 README.md
@@ -45,13 +47,13 @@ listed by running `make`:
 ```sh
 $ make
 clean                          Cleans unit test coverage files and node_modules.
-codestyle-fix                  Run code style checker (jscs) with auto whitespace fixing.
-codestyle                      Run code style checker (jscs).
 coverage                       Run unit tests with coverage reporting. Generates reports into /coverage.
 githooks                       Install git pre-push hooks.
 lint                           Run lint checker (eslint).
-nsp                            Run nsp. Shrinkwraps dependencies, checks for vulnerabilities.
+lint-fix                       Reprint code (prettier, eslint).
+security                       Check for dependency vulnerabilities.
 prepush                        Git pre-push hook task. Run before committing and pushing.
+release                        Versions, tags, and updates changelog based on commit messages.
 test                           Run unit tests.
 ```
 
