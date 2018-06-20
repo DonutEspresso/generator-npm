@@ -27,6 +27,7 @@
 <%_ if (data.coveralls) { _%>
     "coveralls": "^3.0.1",
 <%_ } _%>
+    "documentation": "^8.0.0",
     "eslint": "^4.19.1",
     "eslint-config-prettier": "^2.9.0",
     "eslint-plugin-prettier": "^2.6.0",
