@@ -64,14 +64,14 @@ lint-fix: $(NODE_MODULES) $(PRETTIER) $(ALL_FILES) ## Reprint code (prettier).
 
 
 .PHONY: nsp
-nsp: node_modules $(ALL_FILES) ## Run nsp. Shrinkwraps dependencies, checks for vulnerabilities.
+nsp: $(NODE_MODULES) $(ALL_FILES) ## Run nsp. Shrinkwraps dependencies, checks for vulnerabilities.
 	@$(NPM) shrinkwrap --dev
 	@($(NSP) check) | $(NSP_BADGE)
 	@rm $(SHRINKWRAP)
 
 
 .PHONY: prepush
-prepush: node_modules lint codestyle nsp ## Git pre-push hook task. Run before committing and pushing.
+prepush: $(NODE_MODULES) lint codestyle nsp ## Git pre-push hook task. Run before committing and pushing.
 
 
 .PHONY: clean

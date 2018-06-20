@@ -23,16 +23,16 @@ PACKAGE_LOCK	:= $(ROOT)/package-lock.json
 #
 # Tools and binaries
 #
-NPM				:= npm
-YARN			:= yarn
-ESLINT			:= $(NODE_BIN)/eslint
-MOCHA			:= $(NODE_BIN)/mocha
-NYC				:= $(NODE_BIN)/nyc
-PRETTIER		:= $(NODE_BIN)/prettier
+NPM		:= npm
+YARN		:= yarn
+ESLINT		:= $(NODE_BIN)/eslint
+MOCHA		:= $(NODE_BIN)/mocha
+NYC		:= $(NODE_BIN)/nyc
+PRETTIER	:= $(NODE_BIN)/prettier
 <%_ if (data.coveralls) { _%>
-COVERALLS		:= $(NODE_BIN)/coveralls
+COVERALLS	:= $(NODE_BIN)/coveralls
 <%_ } _%>
-CHANGELOG		:= $(TOOLS)/changelog.js
+CHANGELOG	:= $(TOOLS)/changelog.js
 <%_ if (!data.coveralls) { _%>
 COVERAGE_BADGE	:= $(TOOLS)/coverageBadge.js
 <%_ } _%>
