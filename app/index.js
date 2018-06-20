@@ -1,4 +1,3 @@
-/* eslint-disable global-require */
 'use strict';
 
 // core modules
@@ -12,61 +11,82 @@ const mkdirp = require('mkdirp');
 const npmName = require('npm-name');
 const Generator = require('yeoman-generator');
 
-
-const npmGenerator = class extends Generator {
+/**
+ * @class
+ */
+class NpmGenerator extends Generator {
+    /**
+     * Initialize genertor
+     * @method init
+     * @returns {undefined}
+     */
     init() {
-
-        var self = this;
+        const self = this;
         self.data = {};
         self.cwd = process.cwd();
         self.basedir = path.basename(process.cwd());
         self.log('\nDonutEspresso presents...\n');
 
-        var ascii = chalk.white(fs.readFileSync(
-            path.join(__dirname,  'steam.ascii')
-        ).toString()) + chalk.blue(fs.readFileSync(
-            path.join(__dirname,  'mug.ascii')
-        ).toString());
+        const ascii =
+            chalk.white(
+                fs.readFileSync(path.join(__dirname, 'steam.ascii')).toString()
+            ) +
+            chalk.blue(
+                fs.readFileSync(path.join(__dirname, 'mug.ascii')).toString()
+            );
 
         self.log(ascii);
         self.log('A npm module scaffolding generator');
         self.log('--------------------------------------------------------\n');
     }
 
+    /**
+     * Check
+     * @method check
+     * @returns {undefined}
+     */
     check() {
-
-        var self = this;
-        var done = self.async();
+        const self = this;
+        const done = self.async();
 
         fs.stat(path.join(self.cwd, 'package.json'), function(err, stat) {
             if (err) {
                 return done();
             }
 
-            var prompts = [{
-                name: 'continue',
-                type: 'confirm',
-                message: 'It looks like scaffolding has already been ' +
-                         'generated for this module. Are you sure you want ' +
-                         'to continue?',
-                default: false
-            }];
+            const prompts = [
+                {
+                    name: 'continue',
+                    type: 'confirm',
+                    message:
+                        'It looks like scaffolding has already been ' +
+                        'generated for this module. Are you sure you want ' +
+                        'to continue?',
+                    default: false
+                }
+            ];
             return self.prompt(prompts, function(answers) {
-
                 if (answers.continue) {
                     return done();
                 } else {
-                    self.log(chalk.red(
-                        '[generator] package.json already exists, aborting!'
-                    ));
+                    self.log(
+                        chalk.red(
+                            '[generator] package.json already exists, aborting!'
+                        )
+                    );
+                    // eslint-disable-next-line no-process-exit
                     return process.exit(1);
                 }
             });
         });
     }
 
+    /**
+     * Prompt module name
+     * @method promptModuleName
+     * @returns {undefined}
+     */
     promptModuleName() {
-
         const self = this;
         const basedir = self.basedir;
         const prompts = [
@@ -99,10 +119,14 @@ const npmGenerator = class extends Generator {
         });
     }
 
+    /**
+     * Promp info
+     * @method promptInfo
+     * @returns {undefined}
+     */
     promptInfo() {
-
-        var self = this;
-        var prompts = [
+        const self = this;
+        const prompts = [
             {
                 name: 'description',
                 message: 'description'
@@ -143,7 +167,8 @@ const npmGenerator = class extends Generator {
             {
                 name: 'testEntry',
                 type: 'confirm',
-                message: 'Do you want a unit test entry point? ' +
+                message:
+                    'Do you want a unit test entry point? ' +
                     'By default, all test files are run in parallel, ' +
                     'in a non deterministic order. Choose this option if ' +
                     'your module requires tests to be run in serial order.',
@@ -152,14 +177,16 @@ const npmGenerator = class extends Generator {
             {
                 name: 'travis',
                 type: 'confirm',
-                message: 'Do you want to add a Travis badge to the README? ' +
+                message:
+                    'Do you want to add a Travis badge to the README? ' +
                     'Choose this option if you plan to use Travis CI.',
                 default: true
             },
             {
                 name: 'coveralls',
                 type: 'confirm',
-                message: 'Do you want Coveralls integration? This will add ' +
+                message:
+                    'Do you want Coveralls integration? This will add ' +
                     'a Coveralls badge to the README, and allow testing ' +
                     'coverage to be automatically reported by Travis builds. ' +
                     'This is applicable only when using Travis CI.',
@@ -177,7 +204,7 @@ const npmGenerator = class extends Generator {
             self.data.homepage = answers.homepage;
             self.data.keywords = answers.keywords.split(',');
             self.data.license = answers.license;
-            self.data.year = (new Date()).getFullYear();
+            self.data.year = new Date().getFullYear();
             self.data.coveralls = answers.coveralls;
             self.data.travis = answers.travis;
             self.data.testEntry = answers.testEntry;
@@ -185,9 +212,13 @@ const npmGenerator = class extends Generator {
         });
     }
 
+    /**
+     * Generate library code
+     * @method generate
+     * @returns {undefined}
+     */
     generate() {
-
-        var self = this;
+        const self = this;
 
         mkdirp.sync(path.join(self.cwd, 'lib/'));
         mkdirp.sync(path.join(self.cwd, 'test/'));
@@ -225,13 +256,13 @@ const npmGenerator = class extends Generator {
         );
 
         self.fs.copy(
-            self.templatePath('eslintrc'),
-            self.destinationPath('.eslintrc')
+            self.templatePath('.eslintrc.js'),
+            self.destinationPath('.eslintrc.js')
         );
 
         self.fs.copy(
-            self.templatePath('eslintrc.test'),
-            self.destinationPath('test/.eslintrc')
+            self.templatePath('.eslintrc.test.js'),
+            self.destinationPath('test/.eslintrc.js')
         );
 
         self.fs.copy(
@@ -254,6 +285,16 @@ const npmGenerator = class extends Generator {
             self.destinationPath('tools/githooks/pre-push')
         );
 
+        self.fs.copy(
+            self.templatePath('prettierignore'),
+            self.destinationPath('.prettierignore')
+        );
+
+        self.fs.copy(
+            self.templatePath('.prettierrc.js'),
+            self.destinationPath('.prettierrc.js')
+        );
+
         if (!self.data.coveralls) {
             self.fs.copy(
                 self.templatePath('_coverageBadge.js'),
@@ -269,11 +310,15 @@ const npmGenerator = class extends Generator {
         }
     }
 
+    /**
+     * Install dependencies
+     * @method install
+     * @returns {undefined}
+     */
     install() {
-        var self = this;
-        self.npmInstall();
+        const self = this;
+        self.yarnInstall();
     }
-};
+}
 
-
-module.exports = npmGenerator;
+module.exports = NpmGenerator;
