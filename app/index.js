@@ -256,13 +256,13 @@ class NpmGenerator extends Generator {
         );
 
         self.fs.copy(
-            self.templatePath('eslintrc'),
-            self.destinationPath('.eslintrc')
+            self.templatePath('.eslintrc.js'),
+            self.destinationPath('.eslintrc.js')
         );
 
         self.fs.copy(
-            self.templatePath('eslintrc.test'),
-            self.destinationPath('test/.eslintrc')
+            self.templatePath('.eslintrc.test.js'),
+            self.destinationPath('test/.eslintrc.js')
         );
 
         self.fs.copy(
@@ -291,8 +291,8 @@ class NpmGenerator extends Generator {
         );
 
         self.fs.copy(
-            self.templatePath('prettierrc'),
-            self.destinationPath('.prettierrc')
+            self.templatePath('.prettierrc.js'),
+            self.destinationPath('.prettierrc.js')
         );
 
         if (!self.data.coveralls) {

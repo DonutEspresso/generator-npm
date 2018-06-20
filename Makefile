@@ -12,7 +12,7 @@ TMP		:= $(ROOT)/tmp
 # Tools and binaries
 #
 ESLINT		:= $(NODE_BIN)/eslint
-PRETTIER		:= $(NODE_BIN)/prettier
+PRETTIER	:= $(NODE_BIN)/prettier
 NSP		:= $(NODE_BIN)/nsp
 NPM		:= npm
 NSP_BADGE	:= $(TOOLS)/nspBadge.js
