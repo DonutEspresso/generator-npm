@@ -316,8 +316,18 @@ class NpmGenerator extends Generator {
      * @returns {undefined}
      */
     install() {
-        const self = this;
-        self.yarnInstall();
+        var self = this;
+        self.yarnInstall()
+            .then(() => {
+                self.spawnCommandSync('make', ['docs']);
+                // TODO: check for .git dir
+                // self.spawnCommandSync('make', ['githooks']);
+            })
+            .catch((err) => {
+                // eslint-disable-next-line no-console
+                console.error(err);
+                process.exit(-1);
+            })
     }
 }
 

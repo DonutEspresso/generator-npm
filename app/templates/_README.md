@@ -26,7 +26,7 @@ TODO: How to use this module, examples.
 
 ## API
 
-TODO: API documentation
+See [API](/api.md)
 
 ## Contributing
 

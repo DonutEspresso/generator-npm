@@ -3,6 +3,7 @@
 #
 ROOT_SLASH	:= $(dir $(realpath $(firstword $(MAKEFILE_LIST))))
 ROOT		:= $(patsubst %/,%,$(ROOT_SLASH))
+LIB			:= $(ROOT)/lib
 TEST		:= $(ROOT)/test
 TOOLS		:= $(ROOT)/tools
 GITHOOKS_SRC	:= $(TOOLS)/githooks
@@ -23,6 +24,7 @@ PACKAGE_LOCK	:= $(ROOT)/package-lock.json
 #
 # Tools and binaries
 #
+DOCUMENT	:= $(NODE_BIN)/documentation
 NPM		:= npm
 YARN		:= yarn
 ESLINT		:= $(NODE_BIN)/eslint
@@ -64,6 +66,9 @@ $(NODE_MODULES): $(PACKAGE_JSON) ## Install node_modules
 	@$(YARN)
 	@touch $(NODE_MODULES)
 
+.PHONY: docs
+docs: $(DOCUMENT) $(ALL_FILES)
+	@$(DOCUMENT) build $(LIB) -f md -o ./api.md
 
 .PHONY: help
 help:
