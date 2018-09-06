@@ -24,6 +24,8 @@
   ],
   "devDependencies": {
     "chai": "^4.1.2",
+    "conventional-changelog-angular": "^5.0.0",
+    "conventional-recommended-bump": "^4.0.0",
 <%_ if (data.coveralls) { _%>
     "coveralls": "^3.0.1",
 <%_ } _%>
@@ -33,6 +35,7 @@
     "eslint-plugin-prettier": "^2.6.0",
     "mocha": "^5.2.0",
     "nyc": "^12.0.2",
-    "prettier": "^1.13.5"
+    "prettier": "^1.13.5",
+    "unleash": "^2.0.1"
   }
 }
