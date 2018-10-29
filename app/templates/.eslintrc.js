@@ -99,9 +99,11 @@ module.exports = {
         'no-unused-labels': ['error'],
         'no-useless-call': ['error'],
         'no-useless-concat': ['error'],
+        'no-var': ['error'],
         'no-void': ['error'],
         'no-warning-comments': ['warn'],
         'no-with': ['error'],
+        'prefer-const': ['error'],
         'wrap-iife': ['error'],
         yoda: ['error', 'never'],
 
