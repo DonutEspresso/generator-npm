@@ -13,9 +13,7 @@ TMP		:= $(ROOT)/tmp
 #
 ESLINT		:= $(NODE_BIN)/eslint
 PRETTIER	:= $(NODE_BIN)/prettier
-NSP		:= $(NODE_BIN)/nsp
 NPM		:= npm
-NSP_BADGE	:= $(TOOLS)/nspBadge.js
 
 #
 # Files and globs
@@ -63,15 +61,8 @@ lint-fix: $(NODE_MODULES) $(PRETTIER) $(ALL_FILES) ## Reprint code (prettier).
 	@$(PRETTIER) --write $(ALL_FILES)
 
 
-.PHONY: nsp
-nsp: $(NODE_MODULES) $(ALL_FILES) ## Run nsp. Shrinkwraps dependencies, checks for vulnerabilities.
-	@$(NPM) shrinkwrap --dev
-	@($(NSP) check) | $(NSP_BADGE)
-	@rm $(SHRINKWRAP)
-
-
 .PHONY: prepush
-prepush: $(NODE_MODULES) lint codestyle nsp ## Git pre-push hook task. Run before committing and pushing.
+prepush: $(NODE_MODULES) lint codestyle ## Git pre-push hook task. Run before committing and pushing.
 
 
 .PHONY: clean

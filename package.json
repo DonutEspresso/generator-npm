@@ -32,8 +32,7 @@
     "eslint": "^4.19.1",
     "eslint-config-prettier": "^2.9.0",
     "eslint-plugin-prettier": "^2.6.0",
-    "nsp": "^2.2.1",
-    "yeoman-generator": "^2.0.0",
-    "prettier": "^1.13.5"
+    "prettier": "^1.13.5",
+    "yeoman-generator": "^2.0.0"
   }
 }
