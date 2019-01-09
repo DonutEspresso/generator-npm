@@ -123,9 +123,9 @@ prepush: $(NODE_MODULES) lint coverage security ## Git pre-push hook task. Run b
 .PHONY: test
 test: $(NODE_MODULES) $(MOCHA) ## Run unit tests.
 <%_ if (data.testEntry) { _%>
-	@$(MOCHA) -R spec --full-trace --no-exit --no-timeouts $(TEST_ENTRY)
+	@$(MOCHA) -R spec --full-trace --no-timeouts $(TEST_ENTRY)
 <%_ } else { _%>
-	@$(MOCHA) -R spec --full-trace --no-exit --no-timeouts $(TEST_FILES)
+	@$(MOCHA) -R spec --full-trace --no-timeouts $(TEST_FILES)
 <%_ } _%>
 
 
