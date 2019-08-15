@@ -276,11 +276,6 @@ class NpmGenerator extends Generator {
         );
 
         self.fs.copy(
-            self.templatePath('_changelog.js'),
-            self.destinationPath('tools/changelog.js')
-        );
-
-        self.fs.copy(
             self.templatePath('pre-push'),
             self.destinationPath('tools/githooks/pre-push')
         );
@@ -294,13 +289,6 @@ class NpmGenerator extends Generator {
             self.templatePath('.prettierrc.js'),
             self.destinationPath('.prettierrc.js')
         );
-
-        if (!self.data.coveralls) {
-            self.fs.copy(
-                self.templatePath('_coverageBadge.js'),
-                self.destinationPath('tools/coverageBadge.js')
-            );
-        }
 
         if (self.data.travis) {
             self.fs.copy(
@@ -327,7 +315,7 @@ class NpmGenerator extends Generator {
                 // eslint-disable-next-line no-console
                 console.error(err);
                 process.exit(-1);
-            })
+            });
     }
 }
 

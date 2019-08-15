@@ -126,7 +126,7 @@ security: $(NODE_MODULES) ## Check for dependency vulnerabilities.
 
 
 .PHONY: prepush
-prepush: $(NODE_MODULES) lint coverage ## Git pre-push hook task. Run before committing and pushing.
+prepush: $(NODE_MODULES) lint coverage docs ## Git pre-push hook task. Run before committing and pushing.
 
 
 .PHONY: test
@@ -152,7 +152,7 @@ coverage: $(NODE_MODULES) $(NYC) ## Run unit tests with coverage reporting. Gene
 <%_ if (data.coveralls) { _%>
 .PHONY: report-coverage ## Report unit test coverage to coveralls
 report-coverage: $(NODE_MODULES) $(NYC) ## Run unit tests with coverage reporting. Generates reports into /coverage.
-	@$(NYC) report --reporter=text-lcov make test | $(COVERALLS)
+	@$(NYC) report --reporter=text-lcov | $(COVERALLS)
 
 
 <%_ } _%>
